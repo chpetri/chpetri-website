@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#101416">
+    <title>Christian Petri — Cybersecurity &amp; Network Security</title>
+    <meta name="description" content="Portfolio of Christian Petri, focused on cybersecurity, network security, and security consulting.">
+    <link rel="canonical" href="https://chpetri.com/">
+    <link rel="icon" href="./og.png" type="image/png">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Christian Petri">
+    <meta property="og:title" content="Christian Petri — Cybersecurity &amp; Network Security">
+    <meta property="og:description" content="Cybersecurity, network security, and security consulting portfolio.">
+    <meta property="og:url" content="https://chpetri.com/">
+    <meta property="og:image" content="https://chpetri.com/og.png">
+    <meta property="og:image:alt" content="Christian Petri — Cybersecurity, Network Security, Security Consulting">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Christian Petri — Cybersecurity &amp; Network Security">
+    <meta name="twitter:description" content="Cybersecurity, network security, and security consulting portfolio.">
+    <meta name="twitter:image" content="https://chpetri.com/og.png">
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./terminal.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="site-mark" href="./" aria-current="page" aria-label="Christian Petri — Home">CP</a>
+        <div class="header-nav-wrap">
+          <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Switch between Petrol Slate and Smoked Blue themes" title="Switch theme">
+            <span class="theme-toggle-dot" aria-hidden="true"></span>
+          </button>
+          <nav class="site-nav" aria-label="Primary navigation">
+            <a href="./" aria-current="page">Home</a>
+            <a href="./cv/">CV</a>
+            <a href="./projects/">Projects</a>
+          </nav>
+        </div>
+      </header>
+
+      <main id="main-content">
+        <section class="hero" aria-labelledby="page-title">
+          <h1 id="page-title"><span>Christian</span><span>Petri</span></h1>
+          <div class="hero-meta">
+            <p>IT Security</p>
+            <p>Networks</p>
+            <p>Hardware &amp; Systems</p>
+          </div>
+        </section>
+
+        <section class="professional-introduction" aria-labelledby="introduction-title">
+          <div class="section-label">
+            <p>About</p>
+          </div>
+          <div class="introduction-copy">
+            <h2 id="introduction-title">From troubleshooting hardware<br>to securing systems.</h2>
+            <p>Hi, I'm Christian. I started out in hands-on technical support and hardware repair—diagnosing faults, configuring systems, and fixing problems. Over time, my focus expanded into networking and security: understanding system weaknesses and how to protect them properly. Following full-time training in IT security, I'm looking for a team where I can contribute practically, learn from experienced colleagues, and grow across systems, networks, and security.</p>
+            <p class="scope-note">Security testing shown here comes from training and lab work.</p>
+          </div>
+        </section>
+
+        <section class="terminal-zone" aria-labelledby="terminal-title">
+          <div class="section-label">
+            <p id="terminal-title">Terminal</p>
+          </div>
+
+          <div class="terminal-frame">
+            <div class="terminal-bar">
+              <span class="terminal-title-bar"><span class="terminal-status-dot" aria-hidden="true"></span> guest@chpetri</span>
+            </div>
+            <div class="terminal-body">
+              <div class="terminal-quick-actions" aria-label="Quick command shortcuts">
+                <button type="button" class="quick-chip" data-cmd="help">help</button>
+                <button type="button" class="quick-chip" data-cmd="whoami">whoami</button>
+                <button type="button" class="quick-chip" data-cmd="skills">skills</button>
+                <button type="button" class="quick-chip" data-cmd="certs">certs</button>
+                <button type="button" class="quick-chip" data-cmd="cv">cv</button>
+                <button type="button" class="quick-chip" data-cmd="clear">clear</button>
+              </div>
+
+              <div id="terminal-log" class="terminal-log" role="log" aria-live="polite" aria-relevant="additions text">
+                <p>Type help for available commands, or open cv to view the profile.</p>
+              </div>
+
+              <form id="terminal-form" class="terminal-form" autocomplete="off">
+                <label class="visually-hidden" for="terminal-input">Terminal command</label>
+                <span class="prompt-prefix" aria-hidden="true"><span class="prompt-user">guest@chpetri</span>:<span class="prompt-path">~</span>$</span>
+                <input id="terminal-input" name="command" type="text" maxlength="80" autocapitalize="none" autocomplete="off" spellcheck="false" aria-describedby="terminal-hint">
+              </form>
+              <p id="terminal-hint" class="terminal-hint">↑/↓ history · Tab complete · Ctrl+L clear</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="evidence-zone" aria-labelledby="evidence-title">
+          <div class="evidence-introduction">
+            <div class="section-label">
+              <p>Certifications</p>
+            </div>
+            <div>
+              <h2 id="evidence-title">Current certifications.</h2>
+            </div>
+          </div>
+
+          <div class="evidence-columns" aria-hidden="true">
+            <span></span><span>Certification / Domain</span><span>Date</span>
+          </div>
+          <ol class="evidence-ledger">
+            <li>
+              <span class="evidence-index">01</span>
+              <div class="evidence-title"><h3>CompTIA Network Vulnerability Assessment Professional</h3><p>CompTIA / Vulnerability assessment</p></div>
+              <time datetime="2026-02">02.2026</time>
+            </li>
+            <li>
+              <span class="evidence-index">02</span>
+              <div class="evidence-title"><h3>CompTIA PenTest+</h3><p>CompTIA / Penetration testing</p></div>
+              <time datetime="2026-02">02.2026</time>
+            </li>
+            <li>
+              <span class="evidence-index">03</span>
+              <div class="evidence-title"><h3>Cyber Security Advisor</h3><p>IHK / Security governance</p></div>
+              <time datetime="2026-02">02.2026</time>
+            </li>
+            <li>
+              <span class="evidence-index">04</span>
+              <div class="evidence-title"><h3>CompTIA Security+</h3><p>CompTIA / Security fundamentals</p></div>
+              <time datetime="2025-12">12.2025</time>
+            </li>
+            <li>
+              <span class="evidence-index">05</span>
+              <div class="evidence-title"><h3>CompTIA Network+</h3><p>CompTIA / Networking fundamentals</p></div>
+              <time datetime="2025-08">08.2025</time>
+            </li>
+          </ol>
+        </section>
+      </main>
+
+      <footer class="site-footer home-footer">
+        <div class="footer-label">
+          <p>Contact</p>
+        </div>
+        <nav class="footer-links" aria-label="Direct contact and profiles">
+          <a href="mailto:contact@chpetri.com">Email</a>
+          <a href="https://github.com/chpetri" target="_blank" rel="noopener noreferrer me">GitHub</a>
+          <a href="https://linkedin.com/in/christianpetri1" target="_blank" rel="noopener noreferrer me">LinkedIn</a>
+          <a href="https://tryhackme.com/p/chpetri" target="_blank" rel="noopener noreferrer me">TryHackMe</a>
+        </nav>
+        <p class="footer-meta">Darmstadt, Germany · 2026</p>
+      </footer>
+    </div>
+  </body>
+</html>
