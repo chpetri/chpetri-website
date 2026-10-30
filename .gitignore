@@ -25,3 +25,8 @@ desktop.ini
 ehthumbs.db
 .vscode/
 .idea/
+
+# Impeccable review captures and build state
+.impeccable/review/
+.impeccable/build/
+.impeccable/mocks/

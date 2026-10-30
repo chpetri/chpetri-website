@@ -1,0 +1,189 @@
+/* Sub-pages: CV, Projekte, Kontakt, 404. Two voices: Saira light for the large words and
+   for data in tracked capitals, Baskervville for everything read. */
+
+@import "./base.css";
+
+.page {
+  width: min(100%, 1120px);
+  margin-inline: auto;
+  padding: clamp(40px, 8vh, 96px) var(--edge) clamp(72px, 12vh, 140px);
+}
+
+.display {
+  font-family: var(--display);
+  font-weight: 300;
+  line-height: 0.86;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+
+.label,
+.case-meta,
+.profiles dt {
+  font-family: var(--display);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.note {
+  max-width: 44ch;
+  margin-bottom: clamp(28px, 5vh, 48px);
+  color: var(--ink-2);
+  font-size: 1.125rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.prose {
+  max-width: var(--measure);
+  color: var(--ink-soft);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  /* no paragraph ends on a lone word (browsers without support ignore it) */
+  text-wrap: pretty;
+}
+
+.prose p + p { margin-top: 1em; }
+
+/* The one filled block: pale steel with the ground's blue as text */
+
+.button {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 14px;
+  min-height: 48px;
+  padding: 15px 22px 14px;
+  background: var(--ink);
+  color: var(--ground);
+  font-family: var(--display);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.3s var(--ease-out);
+}
+
+.button small {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  opacity: 0.78;
+}
+
+.button:hover,
+.button:focus-visible { background: #fff; color: var(--ground); }
+
+/* Projekte */
+
+.case {
+  max-width: 880px;
+  padding-top: clamp(28px, 4vh, 40px);
+  border-top: 1px solid var(--rule);
+}
+
+.case h2 {
+  max-width: 15ch;
+  font-size: clamp(48px, 7vw, 104px);
+}
+
+.case-meta {
+  margin: 20px 0 32px;
+  color: var(--ink-3);
+}
+
+.case-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+  margin-top: 40px;
+}
+
+.case-actions > a:not(.button) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--display);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-underline-offset: 0.4em;
+}
+
+/* Kontakt */
+
+.contact-main {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(36px, 7vh, 72px);
+}
+
+.contact-email {
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  font-family: var(--display);
+  font-size: clamp(44px, 8.4vw, 124px);
+  font-weight: 300;
+  line-height: 1;
+  overflow-wrap: anywhere;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.12em;
+  text-decoration-skip-ink: none;
+}
+
+.profiles {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 14px 36px;
+  max-width: 600px;
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.profiles dt { color: var(--ink-3); align-self: baseline; }
+.profiles dd { margin: 0; }
+/* an address has no spaces; let it break rather than push the page sideways */
+.profiles a { display: inline-flex; align-items: center; min-height: 32px; overflow-wrap: anywhere; }
+
+/* 404 */
+
+.lost {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: clamp(26px, 4.4vh, 44px);
+  padding: var(--edge);
+  text-align: center;
+  overflow-x: clip;
+}
+
+.lost h1 { font-size: clamp(110px, min(46vmin, 74svh - 160px), 560px); line-height: 0.76; }
+.lost p { max-width: 37ch; font-size: clamp(1.1875rem, 1.6vw, 1.375rem); line-height: 1.4; }
+
+@media (max-width: 47.4375em) {
+  .page { padding-top: 28px; }
+  .note,
+  .prose,
+  .profiles { font-size: 1.0625rem; }
+  .profiles { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .profiles dd + dt { margin-top: 14px; }
+  .button { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .button small { white-space: normal; }
+}
+
+@media print {
+  .button { padding: 0; background: transparent; color: var(--ink); }
+}
+
+/* contrast themes drop the steel fill; a border in the theme's text colour keeps the block a button */
+@media (forced-colors: active) {
+  .button { border: 1px solid CanvasText; }
+}

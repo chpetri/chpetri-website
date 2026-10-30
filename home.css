@@ -1,0 +1,92 @@
+/* Start page only. Everything it needs ships inside the first response:
+   two font subsets and the engraving are inlined by the build (see vite.config.js).
+   The shared frame is imported first so the rules below win the cascade. */
+
+@import "./base.css";
+
+@font-face {
+  font-family: "Baskervville Start";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("./fonts/home/baskervville-home.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Saira Start";
+  font-style: normal;
+  font-weight: 300;
+  font-display: block;
+  src: url("./fonts/home/saira-hi.woff2") format("woff2");
+}
+
+/* Only the inline subsets and local faces. Naming the full web fonts here would
+   make the browser fetch them (44 kB) while the subsets are still decoding. */
+.home {
+  --serif: "Baskervville Start", "Baskerville", Georgia, serif;
+  --display: "Saira Start", "Arial Narrow", sans-serif;
+}
+
+.hi {
+  /* The greeting sizes itself to the viewport's smaller side, and also to its
+     height: lock, greeting and sentence must fit between the two bars. */
+  --fs: clamp(110px, min(46vmin, 74svh - 214px), 560px);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: clamp(22px, 4.4vh, 44px);
+  /* room for the shackle, which rises 0.6 of the greeting's size above it */
+  padding: calc(var(--fs) * 0.6) var(--edge) 0;
+  overflow-x: clip;
+  text-align: center;
+}
+
+.hi h1 {
+  /* Full width and a fixed line box: the greeting's box, and the lock drawn
+     from it, stay where they are when the font replaces the fallback. */
+  justify-self: stretch;
+  position: relative;
+  isolation: isolate;
+  font-family: var(--display);
+  font-size: var(--fs);
+  font-weight: 300;
+  line-height: 0.76;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* Diderot's padlock (Encyclopédie, Serrurier), seen through a 1-bit raster */
+.hi h1::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: -78%;
+  height: 178%;
+  aspect-ratio: 229 / 320;
+  translate: -50% 0;
+  background: url("./art/schloss.png") 0 0 / 100% 100% no-repeat;
+  image-rendering: pixelated;
+  opacity: 0.34;
+  animation: pull 1.4s steps(18, end) 0.15s both;
+}
+
+/* the plate is pulled once, top to bottom, line by line */
+@keyframes pull {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0); }
+}
+
+.hi-line {
+  /* about 37 characters; em rather than ch, because the subset has no "0" */
+  max-width: 18.2em;
+  min-height: 2lh;
+  color: var(--ink);
+  font-size: clamp(1.25rem, 1.8vw, 1.625rem);
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+@media (max-width: 47.4375em) {
+  .hi-line { font-size: 1.1875rem; }
+}

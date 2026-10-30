@@ -9,10 +9,31 @@
     Header always set Referrer-Policy "no-referrer"
 
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
+    # Font files carry a content hash in their name (assets/name-XXXXXXXX.woff2):
+    # a new font gets a new name, so browsers may keep the old one forever.
+    <FilesMatch "-[A-Za-z0-9_-]{8}\.woff2$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    # Pages are updated in place: browsers revalidate them on every visit.
+    <FilesMatch "\.html$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>
+
+# Every page is built to fit the first TCP round trip (14,600 bytes) only when
+# it is sent compressed; the start page is about 20 kB raw and 13 kB gzipped.
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml image/svg+xml
 </IfModule>
 
 Options -Indexes
+ErrorDocument 404 /404.html
 
 <FilesMatch "(?i)\.(bak|old|tmp|log|sql|ini)$">
     Require all denied
 </FilesMatch>
+# Old routes (the CV link is in circulation on application documents)
+Redirect 301 /about/ /cv/
+Redirect 301 /projects/ /work/

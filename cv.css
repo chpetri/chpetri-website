@@ -1,0 +1,289 @@
+/* The CV: the document that is the product. German first, English by a CSS-only switch, printable. */
+
+@import "./pages.css";
+
+.cv-page {
+  width: min(100%, 1120px);
+  /* the date and label column: "05/2025 – 02/2026" fits on one line, and in rem it grows with the text */
+  --date-col: minmax(6.875rem, 9rem);
+}
+
+/* Labels and data: Saira capitals. Dates are read first, so they sit one step brighter. */
+.cv-section > h3,
+.cv-date,
+.cv-lines time,
+.cv-skills dt,
+.cv-contact p > span,
+.cv-role,
+.cv-entry h4 small,
+.lang-controls {
+  font-family: var(--display);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* The language switch is its own small group; the CV panels follow it, outside the fieldset. */
+.lang {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.lang-choice {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  opacity: 0;
+}
+
+.lang-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 clamp(32px, 5vh, 48px) -12px;
+}
+
+.lang-controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 44px;
+  padding: 0 14px 0 12px;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 0.3s var(--ease-out);
+}
+
+.lang-controls label::before {
+  content: "";
+  width: 0.45em;
+  height: 0.45em;
+  background: currentColor;
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.3s var(--ease-out), transform 0.5s var(--ease-out);
+}
+
+.lang-controls label:hover { color: var(--ink); }
+
+#lang-en:checked ~ .lang-controls label[for="lang-en"],
+#lang-de:checked ~ .lang-controls label[for="lang-de"] { color: var(--ink); }
+
+#lang-en:checked ~ .lang-controls label[for="lang-en"]::before,
+#lang-de:checked ~ .lang-controls label[for="lang-de"]::before { opacity: 1; transform: none; }
+
+#lang-en:focus-visible ~ .lang-controls label[for="lang-en"],
+#lang-de:focus-visible ~ .lang-controls label[for="lang-de"] {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* Without :has() both panels stay visible, German first: complete, only longer. */
+.cv-page:has(#lang-en:checked) .cv-de,
+.cv-page:has(#lang-de:checked) .cv-en { display: none; }
+
+.cv-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px 40px;
+  padding-bottom: 32px;
+}
+
+.cv-head h2 { font-size: clamp(60px, 8vw, 116px); }
+.cv-head .cv-role { margin-top: 14px; color: var(--ink-2); }
+
+.cv-actions { margin: 0 0 clamp(28px, 4vh, 40px); }
+
+.cv-section {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+  gap: 16px clamp(32px, 5vw, 80px);
+  padding: clamp(28px, 4vh, 40px) 0;
+  border-top: 1px solid var(--rule);
+}
+
+/* The screen has a persistent contact link; a standalone printed CV needs its own details. */
+.cv-print-contact { display: none; }
+
+.cv-section > h3 {
+  align-self: start;
+  position: sticky;
+  top: calc(var(--pinned) + 20px);
+  margin-top: 3px;
+  color: var(--ink-3);
+}
+
+.cv-body {
+  max-width: 46rem;
+  min-width: 0;
+  color: var(--ink-soft);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.cv-profile { color: var(--ink); font-size: 1.1875rem; line-height: 1.55; }
+.cv-profile p { max-width: 62ch; }
+
+.cv-lines p,
+.cv-skills > div,
+.cv-contact p {
+  display: grid;
+  grid-template-columns: var(--date-col) minmax(0, 1fr);
+  gap: 24px;
+  padding-block: 12px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.cv-lines p:first-child,
+.cv-skills > div:first-child,
+.cv-contact p:first-child { padding-top: 0; border-top: 0; }
+
+.cv-skills dt,
+.cv-contact p > span { color: var(--ink-3); padding-top: 2px; }
+
+.cv-lines time,
+.cv-date { color: var(--ink-2); font-size: 0.9375rem; }
+
+.cv-lines time { padding-top: 2px; }
+
+.cv-skills { margin: 0; }
+.cv-skills dd { margin: 0; }
+.cv-contact { margin: 0; font-style: normal; }
+.cv-contact a { display: inline-flex; align-items: center; min-height: 32px; overflow-wrap: anywhere; }
+
+.cv-entry {
+  display: grid;
+  grid-template-columns: var(--date-col) minmax(0, 1fr);
+  gap: 24px;
+  padding-bottom: 28px;
+}
+
+.cv-entry + .cv-entry { padding-top: 28px; border-top: 1px solid var(--rule-soft); }
+.cv-entry:last-child { padding-bottom: 0; }
+
+.cv-date { padding-top: 3px; }
+
+.cv-entry h4 {
+  color: var(--ink);
+  font-size: 1.1875rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* a qualifier to the title (e.g. "Refurbishment"), set as a label */
+.cv-entry h4 small { display: block; margin-top: 6px; color: var(--ink-3); }
+
+/* the employer or school, in the reading face, one step below the title */
+.cv-place { margin: 4px 0 14px; color: var(--ink-2); font-size: 1.0625rem; }
+
+.cv-entry ul { list-style: none; }
+
+.cv-entry li {
+  position: relative;
+  padding-left: 1.2em;
+}
+
+.cv-entry li + li { margin-top: 8px; }
+
+.cv-entry li::before {
+  content: "";
+  position: absolute;
+  top: 0.66em;
+  left: 0;
+  width: 0.3em;
+  height: 0.3em;
+  background: var(--ink-3);
+}
+
+.cv-intro { margin-bottom: 12px; }
+
+@media (max-width: 47.4375em) {
+  .cv-section { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 24px 0; }
+  .cv-section > h3 { position: static; }
+  .cv-body { font-size: 1.03125rem; }
+  .cv-profile { font-size: 1.125rem; }
+
+  .cv-lines p,
+  .cv-skills > div,
+  .cv-contact p,
+  .cv-entry { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+
+  .cv-entry { padding-bottom: 22px; }
+  .cv-entry + .cv-entry { padding-top: 22px; }
+}
+
+/* Windows contrast themes replace backgrounds, which would erase the square markers */
+@media (forced-colors: active) {
+  .lang-controls label::before,
+  .cv-entry li::before {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+}
+
+@media print {
+  .lang-controls,
+  .cv-actions { display: none !important; }
+
+  .page { width: auto; padding: 0; }
+  .cv-head { padding: 0 0 6mm; }
+  .cv-head h2 { font-size: 30pt; }
+  .cv-head .cv-role { font-size: 8.5pt; }
+  .cv-section { grid-template-columns: 30mm minmax(0, 1fr); gap: 5mm; padding: 4mm 0; break-inside: auto; }
+  .cv-print-contact { display: grid; }
+  .cv-section > h3 { position: static; font-size: 8.5pt; }
+  .cv-body { max-width: none; font-size: 10pt; line-height: 1.45; }
+  .cv-profile { font-size: 11pt; }
+  .cv-profile p { max-width: none; }
+
+  /* A4 is about 687 CSS px wide, so the phone rules above apply on paper too:
+     bring back the date column beside each entry */
+  .cv-lines p,
+  .cv-skills > div,
+  .cv-contact p,
+  .cv-entry { grid-template-columns: 27mm minmax(0, 1fr); gap: 4mm; }
+  .cv-lines p,
+  .cv-skills > div,
+  .cv-contact p { padding-block: 2mm; }
+  .cv-lines p:first-child,
+  .cv-skills > div:first-child,
+  .cv-contact p:first-child { padding-top: 0; }
+
+  /* PDF text extraction (and applicant tracking systems) splits widely tracked
+     capitals into single letters: keep the labels nearly untracked on paper */
+  .cv-section > h3,
+  .cv-date,
+  .cv-lines time,
+  .cv-skills dt,
+  .cv-contact p > span,
+  .cv-role,
+  .cv-entry h4 small { letter-spacing: 0.03em; }
+
+  /* PDF text extraction drops a hyphen at a line end ("SollIst-Abgleich"):
+     on paper, hyphenated keywords stay whole */
+  .keep { white-space: nowrap; }
+
+  .cv-entry,
+  .cv-lines p,
+  .cv-skills > div,
+  .cv-contact p { break-inside: avoid; }
+  .cv-entry { padding-bottom: 4mm; }
+  .cv-entry + .cv-entry { padding-top: 4mm; }
+  .cv-entry h4 { font-size: 11pt; }
+  .cv-entry h4 small { font-size: 8pt; margin-top: 1mm; }
+  .cv-place { font-size: 9.5pt; margin: 1mm 0 2mm; }
+  .cv-date,
+  .cv-lines time,
+  .cv-skills dt,
+  .cv-contact p > span { font-size: 8.5pt; }
+}

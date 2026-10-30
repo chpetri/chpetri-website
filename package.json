@@ -1,6 +1,6 @@
 {
   "name": "christian-petri-portfolio",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -9,10 +9,10 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 3001",
     "build": "vite build",
-    "test": "npm run build && node --test tests/terminal.test.mjs tests/site.test.mjs",
+    "test": "npm run build && node --test tests/site.test.mjs",
     "check": "npm test"
   },
   "devDependencies": {
-    "vite": "8.2.2"
+    "vite": "8.3.5"
   }
 }

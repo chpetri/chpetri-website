@@ -2,19 +2,37 @@
 
 Source code for my personal website: [chpetri.com](https://chpetri.com).
 
-A minimalist, static website focused on IT security, networks, and systems.
+A static site in German, focused on IT security, networks, and systems: a greeting with a one-line introduction, a bilingual CV (German first) with PDF downloads, one project, and a way to get in touch.
 
 ## Overview
 
-- **Stack:** Semantic HTML, CSS, Vanilla JavaScript, Vite (build only)
-- **Hosting:** GitHub Pages
-- **Design Decisions:** Zero runtime dependencies, no tracking or cookies, no external fonts, and a client-side terminal simulation without external network requests.
+- **Stack:** Semantic HTML, CSS, Vite (build only). No JavaScript is shipped. Each page links one stylesheet (`home.css`, `pages.css` or `cv.css`) that imports the shared `base.css` first; the build inlines it into one `<style>` and allows it in the Content Security Policy by SHA-256 hash.
+- **First round trip:** the start page renders completely from its first response: two font subsets that cover only its own letters and the engraving are inlined too, 12.9 kB gzipped in total (TCP slow start sends 14,600 bytes before the first acknowledgement; 1,000 are left for headers). Every other page keeps HTML and CSS under 13.6 kB gzipped and then loads two cached font files. `npm test` enforces both.
+- **Hosting:** a Hetzner web space serves chpetri.com. `scripts/deploy-ftp.sh` builds, tests and uploads `dist/` over FTPS (credentials in `~/.netrc`, see the script). GitHub Actions runs the tests on every push.
+- **Design:** one ground for the whole site, Anlassblau (#1f2c66, the blue of tempered steel), with pale steel ink. Behind the greeting stands a cut-away padlock from the plates of Diderot's Encyclopédie (public domain, see `art/README.md`); Petri is the genitive of Petrus, the keeper of the keys. Two self-hosted typefaces under the SIL Open Font License: Baskervville for reading and the corner capitals, Saira Extra Condensed for large words and labels (see `fonts/README.md`). Design system: `DESIGN.md`.
+- **Principles:** zero runtime dependencies, no tracking or cookies, no external requests, strict Content Security Policy.
 
 ## Pages
 
-- `/` — Homepage with professional summary, certification ledger, and interactive terminal
-- `/cv/` — Curated bilingual profile (English / German) with print layout
-- `/projects/` — Practical lab environments and technical projects
+- `/` — Start: the greeting inside the four-corner frame
+- `/cv/` — Bilingual CV (German default, English via switch) with certifications, print layout and one PDF per language
+- `/work/` — "Projekte": the IHK case study on secure administrative remote access, with PDF
+- `/contact/` — "Kontakt": email and profiles
+- `/about/`, `/projects/` — Old routes, redirect to `/cv/` and `/work/`
+
+## CV PDFs
+
+`public/docs/Christian_Petri_CV_DE.pdf` and `_EN.pdf` are printed from the built CV page with headless Chrome. Regenerate them after every CV change (serve `dist/` first, e.g. `npx vite preview`):
+
+```bash
+google-chrome-stable --headless=new --no-pdf-header-footer --print-to-pdf=public/docs/Christian_Petri_CV_DE.pdf http://127.0.0.1:4173/cv/
+```
+
+For the English PDF, copy `dist/cv/index.html` with the `lang-en` radio set to `checked`, print that copy, then delete it. Update the sizes in the two download buttons in `cv/index.html`. Then read both PDFs with `pdftotext`: capitals must come out as words, not spaced letters, and no hyphenated keyword may be joined across a line end (wrap such a word in `<span class="keep">`, which keeps it whole on paper only).
+
+## Fonts
+
+The font files in `fonts/` are subsets built by `scripts/fonts.py` (Python with fontTools, development only; instructions in the script). Run it again whenever the start page's visible text changes: its inline subsets only contain the letters it shows, and `npm test` fails until they cover the new text.
 
 ## Local Development
 
@@ -23,7 +41,7 @@ npm ci
 npm run dev
 ```
 
-Run test suite:
+Run the test suite (builds first):
 
 ```bash
 npm test

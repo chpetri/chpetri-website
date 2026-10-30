@@ -1,325 +1,313 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
     <meta name="referrer" content="no-referrer">
     <meta name="color-scheme" content="dark">
-    <meta name="theme-color" content="#101416">
-    <title>Curriculum Vitae — Christian Petri</title>
-    <meta name="description" content="Bilingual curriculum vitae of Christian Petri: technical support experience, IT security training, certifications, skills, and education.">
+    <meta name="theme-color" content="#1f2c66">
+    <title>CV – Christian Petri</title>
+    <meta name="description" content="Lebenslauf von Christian Petri, deutsch und englisch: technischer Support, Weiterbildung in IT-Sicherheit, Zertifikate, Kenntnisse und Studium.">
     <link rel="canonical" href="https://chpetri.com/cv/">
-    <link rel="icon" href="../og.png" type="image/png">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="preload" href="../fonts/baskervville.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/saira-extra-condensed.woff2" as="font" type="font/woff2" crossorigin>
     <meta property="og:type" content="profile">
-    <meta property="og:locale" content="en_GB">
+    <meta property="og:locale" content="de_DE">
     <meta property="og:site_name" content="Christian Petri">
-    <meta property="og:title" content="Curriculum Vitae — Christian Petri">
-    <meta property="og:description" content="Technical support experience, IT security training, certifications, skills, and education.">
+    <meta property="og:title" content="CV – Christian Petri">
+    <meta property="og:description" content="Technischer Support, Weiterbildung in IT-Sicherheit, Zertifikate, Kenntnisse und Studium.">
     <meta property="og:url" content="https://chpetri.com/cv/">
     <meta property="og:image" content="https://chpetri.com/og.png">
-    <meta property="og:image:alt" content="Christian Petri — Cybersecurity, Network Security, Security Consulting">
+    <meta property="og:image:alt" content="„Hi.“ vor einem gravierten Vorhängeschloss auf blauem Grund. Christian Petri, IT-Sicherheit">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Curriculum Vitae — Christian Petri">
-    <meta name="twitter:description" content="Technical support experience, IT security training, certifications, skills, and education.">
-    <meta name="twitter:image" content="https://chpetri.com/og.png">
-    <link rel="stylesheet" href="../styles.css">
-    <script type="module" src="../terminal.js"></script>
+    <link rel="stylesheet" href="../cv.css">
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Skip to CV</a>
+    <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
 
-    <div class="page-shell">
-      <header class="site-header">
-        <a class="site-mark" href="../" aria-label="Christian Petri — Home">CP</a>
-        <div class="header-nav-wrap">
-          <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Switch between Petrol Slate and Smoked Blue themes" title="Switch theme">
-            <span class="theme-toggle-dot" aria-hidden="true"></span>
-          </button>
-          <nav class="site-nav" aria-label="Primary navigation">
-            <a href="../">Home</a>
-            <a href="./" aria-current="page">CV</a>
-            <a href="../projects/">Projects</a>
-          </nav>
+    <header class="corners corners-top">
+      <a href="../" aria-label="Christian Petri – Startseite">Christian Petri</a>
+      <nav aria-label="Hauptnavigation">
+        <a href="./" aria-current="page">CV</a>
+      </nav>
+    </header>
+
+    <main id="main-content" class="page cv-page">
+      <h1 class="visually-hidden">Lebenslauf</h1>
+
+      <fieldset class="lang">
+        <legend class="visually-hidden">Sprache des Lebenslaufs</legend>
+        <input class="lang-choice" type="radio" name="cv-language" id="lang-de" checked>
+        <input class="lang-choice" type="radio" name="cv-language" id="lang-en">
+
+        <div class="lang-controls">
+          <label for="lang-de" lang="de">Deutsch</label>
+          <label for="lang-en" lang="en">English</label>
         </div>
-      </header>
+      </fieldset>
 
-      <main id="main-content" class="subpage-main">
-        <header class="subpage-heading">
-          <h1>Curriculum<br><em>Vitae</em></h1>
-        </header>
+      <div class="lang-panels">
+        <article class="cv cv-de" lang="de" aria-labelledby="cv-de-title">
+          <header class="cv-head">
+            <div>
+              <h2 id="cv-de-title" class="display">Christian Petri</h2>
+              <p class="cv-role">IT-Sicherheit · Netzwerke · Systeme</p>
+            </div>
+          </header>
+          <p class="cv-actions"><a class="button" href="../docs/Christian_Petri_CV_DE.pdf" download="Christian_Petri_CV_DE.pdf">Lebenslauf herunter&shy;laden <small>PDF, 136 KB, Deutsch</small></a></p>
 
-        <fieldset class="language-switcher">
-          <legend class="visually-hidden">CV language</legend>
-          <input class="language-choice" type="radio" name="cv-language" id="lang-en" checked>
-          <input class="language-choice" type="radio" name="cv-language" id="lang-de">
+          <section class="cv-section">
+            <h3 id="de-profil">Profil</h3>
+            <div class="cv-body cv-profile">
+              <p>Ich komme aus dem technischen Support und der Hardwareaufbereitung. Dort habe ich Rechner geprüft und repariert sowie Windows und Linux eingerichtet. Anschließend habe ich eine Vollzeit-Weiterbildung in IT-Sicherheit und Netzwerken abgeschlossen. Besonders interessieren mich Fehlersuche, sichere Systemkonfiguration und die Frage, wie Schwachstellen entstehen und behoben werden können.</p>
+            </div>
+          </section>
 
-          <div class="language-controls" aria-label="Choose CV language">
-            <span>Language</span>
-            <label for="lang-en" lang="en">English</label>
-            <label for="lang-de" lang="de">Deutsch</label>
-          </div>
+          <section class="cv-section">
+            <h3 id="de-zertifikate">Zertifikate</h3>
+            <div class="cv-body cv-lines">
+              <p><time datetime="2026-02">02/2026</time><span><a href="https://www.credly.com/badges/c48603b0-7dba-41fb-a031-c61d6ea4e4e9" target="_blank" rel="noopener noreferrer">CompTIA Network Vulnerability Assessment Professional (CNVP)</a><span class="visually-hidden">, Nachweis bei Credly</span></span></p>
+              <p><time datetime="2026-02">02/2026</time><span><a href="https://www.credly.com/badges/7d9d06ef-a9d5-46a7-8447-32802b1314af" target="_blank" rel="noopener noreferrer">CompTIA PenTest+</a><span class="visually-hidden">, Nachweis bei Credly</span></span></p>
+              <p><time datetime="2026-02">02/2026</time><span>Cyber Security Advisor (IHK)</span></p>
+              <p><time datetime="2025-12">12/2025</time><span><a href="https://www.credly.com/badges/f5bfb6e8-002f-4afe-b1c0-a250c2d9c644" target="_blank" rel="noopener noreferrer">CompTIA Security+</a><span class="visually-hidden">, Nachweis bei Credly</span></span></p>
+              <p><time datetime="2025-08">08/2025</time><span><a href="https://www.credly.com/badges/e5ab2a7c-f5b1-4111-876d-67c401e550cc" target="_blank" rel="noopener noreferrer">CompTIA Network+</a><span class="visually-hidden">, Nachweis bei Credly</span></span></p>
+            </div>
+          </section>
 
-          <div class="language-panels">
-            <article class="cv-document cv-en" lang="en" aria-labelledby="cv-en-title">
-              <header class="cv-document-header">
+          <section class="cv-section">
+            <h3 id="de-training">Weiterbildung</h3>
+            <div class="cv-body">
+              <article class="cv-entry">
+                <p class="cv-date"><time datetime="2025-05">05/2025</time> – <time datetime="2026-02">02/2026</time></p>
                 <div>
-                  <p class="cv-kicker">Christian Petri</p>
-                  <h2 id="cv-en-title">IT Security · Networks · Systems</h2>
+                  <h4>IT-Security-Weiterbildung (Vollzeit)</h4>
+                  <p class="cv-place">MindRefined GmbH / Remote</p>
+                  <p class="cv-intro">Praktische Übungen in Labumgebungen.</p>
+                  <ul>
+                    <li>Netzwerk- und Security-Grundlagen: TCP/IP, DNS, Routing/NAT, VPN, Security Controls sowie Logging/Monitoring mit Log-Quellen und einfacher Alert-/Event-Triage.</li>
+                    <li>Vulnerability Management: Scanning und Enumeration mit Nmap, Priorisierung nach CVSS und Auswirkung, Dokumentation der Maßnahmen und Re-Test.</li>
+                    <li>Web-Application-Testing: HTTP-Requests mit Burp Suite über einen Proxy analysiert und verändert sowie Authentifizierung, Sessions und Input-Validierung getestet.</li>
+                    <li>Ergebnisse mit Nachweisen, Risikobewertung und konkreten Empfehlungen dokumentiert.</li>
+                    <li><a href="../work/"><span class="keep">IHK-Fallstudie</span></a>: Richtlinie für sicheren administrativen Fernzugriff unter Bezug auf ISO/IEC 27001 und BSI IT-Grundschutz; Schutzbedarfsbewertung, <span class="keep">Soll-Ist-Abgleich</span>, Risikoanalyse und Maßnahmenplanung.</li>
+                  </ul>
                 </div>
-                <p>Darmstadt, Germany<br>Updated August 2026</p>
-              </header>
+              </article>
+            </div>
+          </section>
 
-              <section class="cv-section" aria-labelledby="en-profile">
-                <h3 id="en-profile"><span>01</span>Profile</h3>
-                <div class="cv-content cv-profile">
-                  <p>Practical background in hardware diagnostics and technical support, combined with full-time training in IT security and networking. Focused on structured troubleshooting, vulnerability analysis, clear documentation, and secure system configuration. Looking for a team where I can contribute hands-on, take responsibility, and continue learning.</p>
-                </div>
-              </section>
+          <section class="cv-section">
+            <h3 id="de-skills">Technische Fähigkeiten</h3>
+            <dl class="cv-body cv-skills">
+              <div><dt>Security</dt><dd>Vulnerability Management; Netzwerk- und Webanwendungstests in Labumgebungen; Risikoanalyse und Reporting; Grundlagen in IAM und Hardening</dd></div>
+              <div><dt>Governance</dt><dd>ISO/IEC 27001, BSI IT-Grundschutz, Schutzbedarfsbewertung, Richtlinienentwicklung</dd></div>
+              <div><dt>Netzwerke</dt><dd>TCP/IP, Subnetting, DNS, DHCP, Routing, NAT, VPN</dd></div>
+              <div><dt>Tools &amp; OS</dt><dd>Linux – Ubuntu/Debian; Kali (Labumgebungen); Windows 10/11; Wireshark; Nmap; Burp Suite; PowerShell-Grundlagen; Git; VMware; VirtualBox</dd></div>
+            </dl>
+          </section>
 
-              <section class="cv-section" aria-labelledby="en-certs">
-                <h3 id="en-certs"><span>02</span>Certifications</h3>
-                <div class="cv-content cv-lines">
-                  <p><time datetime="2026-02">02/2026</time><span>CompTIA Network Vulnerability Assessment Professional (CNVP)</span></p>
-                  <p><time datetime="2026-02">02/2026</time><span>CompTIA PenTest+</span></p>
-                  <p><time datetime="2026-02">02/2026</time><span>Cyber Security Advisor (IHK)</span></p>
-                  <p><time datetime="2025-12">12/2025</time><span>CompTIA Security+</span></p>
-                  <p><time datetime="2025-08">08/2025</time><span>CompTIA Network+</span></p>
-                </div>
-              </section>
-
-              <section class="cv-section" aria-labelledby="en-training">
-                <h3 id="en-training"><span>03</span>IT Security Training</h3>
-                <div class="cv-content">
-                  <article class="cv-entry">
-                    <p class="cv-date"><time datetime="2025-05">05/2025</time>—<time datetime="2026-02">02/2026</time></p>
-                    <div>
-                      <h4>Full-time IT Security Training</h4>
-                      <p class="cv-place">MindRefined GmbH / Remote</p>
-                      <ul>
-                        <li>Networking and security fundamentals: TCP/IP, DNS, routing/NAT, VPNs, security controls, and logging/monitoring using log sources and basic alert/event triage.</li>
-                        <li>Vulnerability management <mark>[lab]</mark>: scanned and enumerated systems with Nmap, prioritised findings by CVSS and impact, documented remediation, and re-tested.</li>
-                        <li>Web application testing <mark>[lab]</mark>: proxied and modified HTTP requests with Burp Suite and tested authentication, sessions, and input validation.</li>
-                        <li>Reporting: documented findings with evidence, impact, risk, and recommended fixes.</li>
-                        <li>IHK project <mark>[case study]</mark>: policy for secure administrative remote access with reference to ISO/IEC 27001 and BSI IT-Grundschutz; protection requirements determination, gap analysis, risk assessment, and remediation planning.</li>
-                      </ul>
-                    </div>
-                  </article>
-                </div>
-              </section>
-
-              <section class="cv-section" aria-labelledby="en-skills">
-                <h3 id="en-skills"><span>04</span>Technical Skills</h3>
-                <dl class="cv-content cv-skills">
-                  <div><dt>Core Security</dt><dd>Vulnerability management; network and web application testing <mark>[lab]</mark>; risk assessment and reporting; IAM and hardening <mark>[fundamentals]</mark></dd></div>
-                  <div><dt>Governance</dt><dd>ISO/IEC 27001, BSI IT-Grundschutz, protection requirements determination, gap analysis, risk assessment, and policy development <mark>[IHK case study]</mark></dd></div>
-                  <div><dt>Networking</dt><dd>TCP/IP, subnetting, DNS, DHCP, routing, NAT, VPNs</dd></div>
-                  <div><dt>Tools &amp; OS</dt><dd>Linux — Ubuntu/Debian; Kali <mark>[lab]</mark>; Windows 10/11; Wireshark; Nmap; Burp Suite; PowerShell <mark>[fundamentals]</mark>; Git; VMware; VirtualBox</dd></div>
-                </dl>
-              </section>
-
-              <section class="cv-section" aria-labelledby="en-experience">
-                <h3 id="en-experience"><span>05</span>Professional Experience</h3>
-                <div class="cv-content cv-entries">
-                  <article class="cv-entry">
-                    <p class="cv-date"><time datetime="2024-11">11/2024</time>—<time datetime="2025-05">05/2025</time></p>
-                    <div>
-                      <h4>Technical Support / IT Technician <small>Hardware Refurbishment</small></h4>
-                      <p class="cv-place">Computer für alle / Griesheim</p>
-                      <ul>
-                        <li>Diagnosed and repaired desktop and laptop hardware, including RAM, SSD, and power-supply testing.</li>
-                        <li>Installed and configured Windows and Linux systems, set up drivers, and applied system updates.</li>
-                        <li>Documented hardware defects and device status, verified functionality, and prepared systems for handover.</li>
-                      </ul>
-                    </div>
-                  </article>
-                  <article class="cv-entry">
-                    <p class="cv-date"><time datetime="2022-09">09/2022</time>—<time datetime="2024-10">10/2024</time></p>
-                    <div>
-                      <h4>Independent IT Study &amp; Hands-on Technical Labs</h4>
-                      <p class="cv-place">Self-directed professional development</p>
-                      <p>Hands-on self-study in IT security and Linux through TryHackMe and dedicated test environments in preparation for full-time training.</p>
-                    </div>
-                  </article>
-                  <article class="cv-entry">
-                    <p class="cv-date"><time datetime="2021">2021</time></p>
-                    <div>
-                      <h4>Working Student / Strategy &amp; Public Relations</h4>
-                      <p class="cv-place">eprimo GmbH</p>
-                      <p>Maintained and optimised digital web content; conducted keyword and website performance analysis.</p>
-                    </div>
-                  </article>
-                  <article class="cv-entry">
-                    <p class="cv-date"><time datetime="2020">2020</time>—<time datetime="2021">2021</time></p>
-                    <div>
-                      <h4>Working Student / Business Consulting</h4>
-                      <p class="cv-place">Signition Holding</p>
-                      <p>Supported B2B business development and operational tasks in marketing and sales digitalisation projects.</p>
-                    </div>
-                  </article>
-                </div>
-              </section>
-
-              <section class="cv-section" aria-labelledby="en-education">
-                <h3 id="en-education"><span>06</span>Education</h3>
-                <div class="cv-content cv-entries compact">
-                  <article class="cv-entry"><p class="cv-date">2019—2022</p><div><h4>Studies in Business Administration</h4><p class="cv-place">Darmstadt University of Applied Sciences</p><p>Areas of focus: project management, business law, and investment planning.</p></div></article>
-                  <article class="cv-entry"><p class="cv-date">2018—2019</p><div><h4>Studies in Online Communication</h4><p class="cv-place">Darmstadt University of Applied Sciences</p><p>Foundations in information technology and online marketing.</p></div></article>
-                </div>
-              </section>
-
-              <section class="cv-section" aria-labelledby="en-languages">
-                <h3 id="en-languages"><span>07</span>Languages</h3>
-                <div class="cv-content">
-                  <p>German — native; English — B2</p>
-                </div>
-              </section>
-
-              <section class="cv-section" aria-labelledby="en-contact">
-                <h3 id="en-contact"><span>08</span>Contact</h3>
-                <address class="cv-content cv-contact">
-                  <p><span>Location</span>Darmstadt, Germany</p>
-                  <p><span>Email</span><a href="mailto:contact@chpetri.com">contact@chpetri.com</a></p>
-                  <p><span>GitHub</span><a href="https://github.com/chpetri" target="_blank" rel="noopener noreferrer me">github.com/chpetri</a></p>
-                  <p><span>LinkedIn</span><a href="https://linkedin.com/in/christianpetri1" target="_blank" rel="noopener noreferrer me">linkedin.com/in/christianpetri1</a></p>
-                  <p><span>TryHackMe</span><a href="https://tryhackme.com/p/chpetri" target="_blank" rel="noopener noreferrer me">tryhackme.com/p/chpetri</a></p>
-                </address>
-              </section>
-            </article>
-
-            <article class="cv-document cv-de" lang="de" aria-labelledby="cv-de-title">
-              <header class="cv-document-header">
+          <section class="cv-section">
+            <h3 id="de-erfahrung">Beruflicher Werdegang</h3>
+            <div class="cv-body">
+              <article class="cv-entry">
+                <p class="cv-date"><time datetime="2024-11">11/2024</time> – <time datetime="2025-05">05/2025</time></p>
                 <div>
-                  <p class="cv-kicker">Christian Petri</p>
-                  <h2 id="cv-de-title">IT-Sicherheit · Netzwerke · Systeme</h2>
+                  <h4>Technischer Support / IT-Techniker <small>Refurbishment</small></h4>
+                  <p class="cv-place">Computer für alle / Griesheim</p>
+                  <ul>
+                    <li>Desktop-PCs und Laptops geprüft und repariert, unter anderem Arbeitsspeicher, SSDs und Netzteile getestet.</li>
+                    <li>Windows und Linux installiert und eingerichtet, einschließlich Treibern und Systemupdates.</li>
+                    <li>Defekte und Gerätezustand dokumentiert, Funktionen geprüft und Rechner für die Ausgabe vorbereitet.</li>
+                  </ul>
                 </div>
-                <p>Darmstadt, Deutschland<br>Stand August 2026</p>
-              </header>
-
-              <section class="cv-section" aria-labelledby="de-profil">
-                <h3 id="de-profil"><span>01</span>Profil</h3>
-                <div class="cv-content cv-profile">
-                  <p>Praktische Erfahrung in Hardwarediagnose und technischem Support, ergänzt durch eine Vollzeit-Weiterbildung in IT-Sicherheit und Netzwerken. Mein Fokus liegt auf strukturierter Fehler- und Schwachstellenanalyse, nachvollziehbarer Dokumentation und sicherer Systemkonfiguration. Ich suche ein Team, bei dem ich hands-on mitarbeiten, Verantwortung übernehmen und dazulernen kann.</p>
+              </article>
+              <article class="cv-entry">
+                <p class="cv-date"><time datetime="2022-09">09/2022</time> – <time datetime="2024-10">10/2024</time></p>
+                <div>
+                  <h4>Selbststudium: IT-Sicherheit und Linux</h4>
+                  <p class="cv-place">Eigenständige Weiterbildung</p>
+                  <p>Praxisorientiertes Selbststudium in IT-Sicherheit und Linux mit TryHackMe und Testumgebungen zur Vorbereitung auf die Vollzeit-Weiterbildung.</p>
                 </div>
-              </section>
-
-              <section class="cv-section" aria-labelledby="de-zertifikate">
-                <h3 id="de-zertifikate"><span>02</span>Zertifikate</h3>
-                <div class="cv-content cv-lines">
-                  <p><time datetime="2026-02">02/2026</time><span>CompTIA Network Vulnerability Assessment Professional (CNVP)</span></p>
-                  <p><time datetime="2026-02">02/2026</time><span>CompTIA PenTest+</span></p>
-                  <p><time datetime="2026-02">02/2026</time><span>Cyber Security Advisor (IHK)</span></p>
-                  <p><time datetime="2025-12">12/2025</time><span>CompTIA Security+</span></p>
-                  <p><time datetime="2025-08">08/2025</time><span>CompTIA Network+</span></p>
+              </article>
+              <article class="cv-entry">
+                <p class="cv-date"><time datetime="2021">2021</time></p>
+                <div>
+                  <h4>Werkstudent / Strategy &amp; Public Relations</h4>
+                  <p class="cv-place">eprimo GmbH</p>
+                  <p>Pflege und Optimierung digitaler Webinhalte sowie Analyse von <span class="keep">Website-Performance</span> und SEO-Maßnahmen.</p>
                 </div>
-              </section>
-
-              <section class="cv-section" aria-labelledby="de-training">
-                <h3 id="de-training"><span>03</span>IT-Security-Qualifizierung</h3>
-                <div class="cv-content">
-                  <article class="cv-entry">
-                    <p class="cv-date"><time datetime="2025-05">05/2025</time>—<time datetime="2026-02">02/2026</time></p>
-                    <div>
-                      <h4>IT-Security-Weiterbildung (Vollzeit)</h4>
-                      <p class="cv-place">MindRefined GmbH / Remote</p>
-                      <ul>
-                        <li>Netzwerk- und Security-Grundlagen: TCP/IP, DNS, Routing/NAT, VPN, Security Controls sowie Logging/Monitoring mit Log-Quellen und einfacher Alert-/Event-Triage.</li>
-                        <li>Vulnerability Management <mark>[Lab]</mark>: Scanning und Enumeration mit Nmap, Priorisierung nach CVSS und Auswirkung, Dokumentation der Maßnahmen und Re-Test.</li>
-                        <li>Web-Application-Testing <mark>[Lab]</mark>: HTTP-Requests mit Burp Suite über einen Proxy analysiert und verändert sowie Authentifizierung, Sessions und Input-Validierung getestet.</li>
-                        <li>Reporting: Findings mit Nachweisen, Auswirkungen, Risiken und empfohlenen Maßnahmen dokumentiert.</li>
-                        <li>IHK-Projektarbeit <mark>[Fallstudie]</mark>: Richtlinie für sicheren administrativen Fernzugriff unter Bezug auf ISO/IEC 27001 und BSI IT-Grundschutz; Schutzbedarfsbewertung, Soll-Ist-Abgleich, Risikoanalyse und Maßnahmenplanung.</li>
-                      </ul>
-                    </div>
-                  </article>
+              </article>
+              <article class="cv-entry">
+                <p class="cv-date"><time datetime="2020">2020</time> – <time datetime="2021">2021</time></p>
+                <div>
+                  <h4>Werkstudent / Business Consulting</h4>
+                  <p class="cv-place">Signition Holding</p>
+                  <p>Unterstützung bei der B2B-Akquise sowie bei operativen Aufgaben in Projekten zur Digitalisierung von Marketing und Vertrieb.</p>
                 </div>
-              </section>
+              </article>
+            </div>
+          </section>
 
-              <section class="cv-section" aria-labelledby="de-skills">
-                <h3 id="de-skills"><span>04</span>Technische Fähigkeiten</h3>
-                <dl class="cv-content cv-skills">
-                  <div><dt>Security</dt><dd>Vulnerability Management; Netzwerk- und Web-Application-Testing <mark>[Lab]</mark>; Risikoanalyse und Reporting; IAM und Hardening <mark>[Grundlagen]</mark></dd></div>
-                  <div><dt>Governance</dt><dd>ISO/IEC 27001, BSI IT-Grundschutz, Schutzbedarfsbewertung, Soll-Ist-Abgleich, Risikoanalyse und Richtlinienentwicklung <mark>[IHK-Fallstudie]</mark></dd></div>
-                  <div><dt>Networking</dt><dd>TCP/IP, Subnetting, DNS, DHCP, Routing, NAT, VPN</dd></div>
-                  <div><dt>Tools &amp; OS</dt><dd>Linux — Ubuntu/Debian; Kali <mark>[Lab]</mark>; Windows 10/11; Wireshark; Nmap; Burp Suite; PowerShell <mark>[Grundlagen]</mark>; Git; VMware; VirtualBox</dd></div>
-                </dl>
-              </section>
+          <section class="cv-section">
+            <h3 id="de-bildung">Studium</h3>
+            <div class="cv-body">
+              <article class="cv-entry"><p class="cv-date">2019 – 2022</p><div><h4>Studium der Betriebswirtschaftslehre</h4><p class="cv-place">Hochschule Darmstadt</p><p>Schwerpunkte: Projektmanagement, Wirtschaftsrecht und Investitionsplanung.</p></div></article>
+              <article class="cv-entry"><p class="cv-date">2018 – 2019</p><div><h4>Studium Onlinekommunikation</h4><p class="cv-place">Hochschule Darmstadt</p><p>Grundlagen in Informationstechnologie und Online-Marketing.</p></div></article>
+            </div>
+          </section>
 
-              <section class="cv-section" aria-labelledby="de-erfahrung">
-                <h3 id="de-erfahrung"><span>05</span>Beruflicher Werdegang</h3>
-                <div class="cv-content cv-entries">
-                  <article class="cv-entry">
-                    <p class="cv-date"><time datetime="2024-11">11/2024</time>—<time datetime="2025-05">05/2025</time></p>
-                    <div>
-                      <h4>Technischer Support / IT-Techniker <small>Refurbishment</small></h4>
-                      <p class="cv-place">Computer für alle / Griesheim</p>
-                      <ul>
-                        <li>Diagnose und Reparatur von Desktop- und Laptop-Hardware einschließlich RAM-, SSD- und PSU-Tests.</li>
-                        <li>Installation und Basiskonfiguration von Windows und Linux einschließlich Treibern und Systemupdates.</li>
-                        <li>Fehlerdokumentation, Funktionstests und Vorbereitung der Geräte für die Ausgabe.</li>
-                      </ul>
-                    </div>
-                  </article>
-                  <article class="cv-entry">
-                    <p class="cv-date"><time datetime="2022-09">09/2022</time>—<time datetime="2024-10">10/2024</time></p>
-                    <div>
-                      <h4>IT-Selbststudium &amp; technische Praxislabs</h4>
-                      <p class="cv-place">Eigenständige Weiterbildung</p>
-                      <p>Praxisorientiertes Selbststudium in IT-Security und Linux mit TryHackMe und Testumgebungen zur Vorbereitung auf die Vollzeit-Weiterbildung.</p>
-                    </div>
-                  </article>
-                  <article class="cv-entry">
-                    <p class="cv-date"><time datetime="2021">2021</time></p>
-                    <div>
-                      <h4>Werkstudent / Strategy &amp; Public Relations</h4>
-                      <p class="cv-place">eprimo GmbH</p>
-                      <p>Pflege und Optimierung digitaler Webinhalte sowie Analyse von Website-Performance und SEO-Maßnahmen.</p>
-                    </div>
-                  </article>
-                  <article class="cv-entry">
-                    <p class="cv-date"><time datetime="2020">2020</time>—<time datetime="2021">2021</time></p>
-                    <div>
-                      <h4>Werkstudent / Business Consulting</h4>
-                      <p class="cv-place">Signition Holding</p>
-                      <p>Unterstützung bei der B2B-Akquise sowie bei operativen Aufgaben in Projekten zur Digitalisierung von Marketing und Vertrieb.</p>
-                    </div>
-                  </article>
+          <section class="cv-section">
+            <h3 id="de-sprachen">Sprachen</h3>
+            <div class="cv-body">
+              <p>Deutsch – Muttersprache; Englisch – B2</p>
+            </div>
+          </section>
+
+          <section class="cv-section cv-print-contact">
+            <h3 id="de-kontakt">Kontakt</h3>
+            <address class="cv-body cv-contact">
+              <p><span>E-Mail</span><a href="mailto:contact@chpetri.com">contact@chpetri.com</a></p>
+              <p><span>GitHub</span><a href="https://github.com/chpetri" target="_blank" rel="noopener noreferrer me">github.com/chpetri</a></p>
+              <p><span>LinkedIn</span><a href="https://linkedin.com/in/christianpetri1" target="_blank" rel="noopener noreferrer me">linkedin.com/in/christianpetri1</a></p>
+              <p><span>TryHackMe</span><a href="https://tryhackme.com/p/chpetri" target="_blank" rel="noopener noreferrer me">tryhackme.com/p/chpetri</a></p>
+            </address>
+          </section>
+        </article>
+
+        <article class="cv cv-en" lang="en" aria-labelledby="cv-en-title">
+          <header class="cv-head">
+            <div>
+              <h2 id="cv-en-title" class="display">Christian Petri</h2>
+              <p class="cv-role">IT Security · Networks · Systems</p>
+            </div>
+          </header>
+          <p class="cv-actions"><a class="button" href="../docs/Christian_Petri_CV_EN.pdf" download="Christian_Petri_CV_EN.pdf">Download CV <small>PDF, 129 KB, English</small></a></p>
+
+          <section class="cv-section">
+            <h3 id="en-profile">Profile</h3>
+            <div class="cv-body cv-profile">
+              <p>My background is in technical support and hardware refurbishment, where I tested and repaired computers and set up Windows and Linux. I then completed full-time training in IT security and networking. I’m particularly interested in troubleshooting, secure system configuration, and understanding how vulnerabilities arise and how to fix them.</p>
+            </div>
+          </section>
+
+          <section class="cv-section">
+            <h3 id="en-certs">Certifications</h3>
+            <div class="cv-body cv-lines">
+              <p><time datetime="2026-02">02/2026</time><span><a href="https://www.credly.com/badges/c48603b0-7dba-41fb-a031-c61d6ea4e4e9" target="_blank" rel="noopener noreferrer">CompTIA Network Vulnerability Assessment Professional (CNVP)</a><span class="visually-hidden">, verification on Credly</span></span></p>
+              <p><time datetime="2026-02">02/2026</time><span><a href="https://www.credly.com/badges/7d9d06ef-a9d5-46a7-8447-32802b1314af" target="_blank" rel="noopener noreferrer">CompTIA PenTest+</a><span class="visually-hidden">, verification on Credly</span></span></p>
+              <p><time datetime="2026-02">02/2026</time><span>Cyber Security Advisor (IHK)</span></p>
+              <p><time datetime="2025-12">12/2025</time><span><a href="https://www.credly.com/badges/f5bfb6e8-002f-4afe-b1c0-a250c2d9c644" target="_blank" rel="noopener noreferrer">CompTIA Security+</a><span class="visually-hidden">, verification on Credly</span></span></p>
+              <p><time datetime="2025-08">08/2025</time><span><a href="https://www.credly.com/badges/e5ab2a7c-f5b1-4111-876d-67c401e550cc" target="_blank" rel="noopener noreferrer">CompTIA Network+</a><span class="visually-hidden">, verification on Credly</span></span></p>
+            </div>
+          </section>
+
+          <section class="cv-section">
+            <h3 id="en-training">Training</h3>
+            <div class="cv-body">
+              <article class="cv-entry">
+                <p class="cv-date"><time datetime="2025-05">05/2025</time> – <time datetime="2026-02">02/2026</time></p>
+                <div>
+                  <h4>Full-time IT Security Training</h4>
+                  <p class="cv-place">MindRefined GmbH / Remote</p>
+                  <p class="cv-intro">Practical exercises in lab environments.</p>
+                  <ul>
+                    <li>Networking and security fundamentals: TCP/IP, DNS, routing/NAT, VPNs, security controls, and logging/monitoring using log sources and basic alert/event triage.</li>
+                    <li>Vulnerability management: scanned and enumerated systems with Nmap, prioritised findings by CVSS and impact, documented remediation, and re-tested.</li>
+                    <li>Web application testing: proxied and modified HTTP requests with Burp Suite and tested authentication, sessions, and input validation.</li>
+                    <li>Documented findings with evidence, risk assessments, and practical recommendations.</li>
+                    <li><a href="../work/">IHK case study</a>: policy for secure administrative remote access with reference to ISO/IEC 27001 and BSI IT-Grundschutz; protection requirements determination, gap analysis, risk assessment, and remediation planning.</li>
+                  </ul>
                 </div>
-              </section>
+              </article>
+            </div>
+          </section>
 
-              <section class="cv-section" aria-labelledby="de-bildung">
-                <h3 id="de-bildung"><span>06</span>Akademischer Werdegang</h3>
-                <div class="cv-content cv-entries compact">
-                  <article class="cv-entry"><p class="cv-date">2019—2022</p><div><h4>Studium der Betriebswirtschaftslehre</h4><p class="cv-place">Hochschule Darmstadt</p><p>Schwerpunkte: Projektmanagement, Wirtschaftsrecht und Investitionsplanung.</p></div></article>
-                  <article class="cv-entry"><p class="cv-date">2018—2019</p><div><h4>Studium Onlinekommunikation</h4><p class="cv-place">Hochschule Darmstadt</p><p>Grundlagen in Informationstechnologie und Online-Marketing.</p></div></article>
+          <section class="cv-section">
+            <h3 id="en-skills">Technical Skills</h3>
+            <dl class="cv-body cv-skills">
+              <div><dt>Security</dt><dd>Vulnerability management; network and web application testing in lab environments; risk assessment and reporting; fundamentals of IAM and hardening</dd></div>
+              <div><dt>Governance</dt><dd>ISO/IEC 27001, BSI IT-Grundschutz, protection requirements determination, policy development</dd></div>
+              <div><dt>Networking</dt><dd>TCP/IP, subnetting, DNS, DHCP, routing, NAT, VPNs</dd></div>
+              <div><dt>Tools &amp; OS</dt><dd>Linux – Ubuntu/Debian; Kali (lab environments); Windows 10/11; Wireshark; Nmap; Burp Suite; PowerShell fundamentals; Git; VMware; VirtualBox</dd></div>
+            </dl>
+          </section>
+
+          <section class="cv-section">
+            <h3 id="en-experience">Professional Experience</h3>
+            <div class="cv-body">
+              <article class="cv-entry">
+                <p class="cv-date"><time datetime="2024-11">11/2024</time> – <time datetime="2025-05">05/2025</time></p>
+                <div>
+                  <h4>Technical Support / IT Technician <small>Hardware Refurbishment</small></h4>
+                  <p class="cv-place">Computer für alle / Griesheim</p>
+                  <ul>
+                    <li>Tested and repaired desktop PCs and laptops, including RAM, SSDs, and power supplies.</li>
+                    <li>Installed and configured Windows and Linux, including drivers and system updates.</li>
+                    <li>Documented faults and device condition, checked functionality, and prepared computers for handover.</li>
+                  </ul>
                 </div>
-              </section>
-
-              <section class="cv-section" aria-labelledby="de-sprachen">
-                <h3 id="de-sprachen"><span>07</span>Sprachen</h3>
-                <div class="cv-content">
-                  <p>Deutsch — Muttersprache; Englisch — B2</p>
+              </article>
+              <article class="cv-entry">
+                <p class="cv-date"><time datetime="2022-09">09/2022</time> – <time datetime="2024-10">10/2024</time></p>
+                <div>
+                  <h4>Independent study: IT security and Linux</h4>
+                  <p class="cv-place">Self-directed professional development</p>
+                  <p>Hands-on self-study in IT security and Linux through TryHackMe and dedicated test environments in preparation for full-time training.</p>
                 </div>
-              </section>
+              </article>
+              <article class="cv-entry">
+                <p class="cv-date"><time datetime="2021">2021</time></p>
+                <div>
+                  <h4>Working Student / Strategy &amp; Public Relations</h4>
+                  <p class="cv-place">eprimo GmbH</p>
+                  <p>Maintained and optimised digital web content; analysed website performance and SEO measures.</p>
+                </div>
+              </article>
+              <article class="cv-entry">
+                <p class="cv-date"><time datetime="2020">2020</time> – <time datetime="2021">2021</time></p>
+                <div>
+                  <h4>Working Student / Business Consulting</h4>
+                  <p class="cv-place">Signition Holding</p>
+                  <p>Supported B2B business development and operational tasks in marketing and sales digitalisation projects.</p>
+                </div>
+              </article>
+            </div>
+          </section>
 
-              <section class="cv-section" aria-labelledby="de-kontakt">
-                <h3 id="de-kontakt"><span>08</span>Kontakt</h3>
-                <address class="cv-content cv-contact">
-                  <p><span>Ort</span>Darmstadt, Deutschland</p>
-                  <p><span>E-Mail</span><a href="mailto:contact@chpetri.com">contact@chpetri.com</a></p>
-                  <p><span>GitHub</span><a href="https://github.com/chpetri" target="_blank" rel="noopener noreferrer me">github.com/chpetri</a></p>
-                  <p><span>LinkedIn</span><a href="https://linkedin.com/in/christianpetri1" target="_blank" rel="noopener noreferrer me">linkedin.com/in/christianpetri1</a></p>
-                  <p><span>TryHackMe</span><a href="https://tryhackme.com/p/chpetri" target="_blank" rel="noopener noreferrer me">tryhackme.com/p/chpetri</a></p>
-                </address>
-              </section>
-            </article>
-          </div>
-        </fieldset>
-      </main>
+          <section class="cv-section">
+            <h3 id="en-education">Education</h3>
+            <div class="cv-body">
+              <article class="cv-entry"><p class="cv-date">2019 – 2022</p><div><h4>Studies in Business Administration</h4><p class="cv-place">Darmstadt University of Applied Sciences</p><p>Areas of focus: project management, business law, and investment planning.</p></div></article>
+              <article class="cv-entry"><p class="cv-date">2018 – 2019</p><div><h4>Studies in Online Communication</h4><p class="cv-place">Darmstadt University of Applied Sciences</p><p>Foundations in information technology and online marketing.</p></div></article>
+            </div>
+          </section>
 
-      <footer class="site-footer">
-        <span>Christian Petri · Darmstadt, Germany</span>
-        <a href="../">Return home</a>
-      </footer>
-    </div>
+          <section class="cv-section">
+            <h3 id="en-languages">Languages</h3>
+            <div class="cv-body">
+              <p>German – native; English – B2</p>
+            </div>
+          </section>
+
+          <section class="cv-section cv-print-contact">
+            <h3 id="en-contact">Contact</h3>
+            <address class="cv-body cv-contact">
+              <p><span>Email</span><a href="mailto:contact@chpetri.com">contact@chpetri.com</a></p>
+              <p><span>GitHub</span><a href="https://github.com/chpetri" target="_blank" rel="noopener noreferrer me">github.com/chpetri</a></p>
+              <p><span>LinkedIn</span><a href="https://linkedin.com/in/christianpetri1" target="_blank" rel="noopener noreferrer me">linkedin.com/in/christianpetri1</a></p>
+              <p><span>TryHackMe</span><a href="https://tryhackme.com/p/chpetri" target="_blank" rel="noopener noreferrer me">tryhackme.com/p/chpetri</a></p>
+            </address>
+          </section>
+        </article>
+      </div>
+    </main>
+
+    <footer class="corners corners-bottom">
+      <nav aria-label="Weitere Seiten">
+        <a href="../work/">Projekte</a>
+        <a href="../contact/">Kontakt</a>
+      </nav>
+    </footer>
   </body>
 </html>
