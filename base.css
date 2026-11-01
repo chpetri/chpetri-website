@@ -1,21 +1,7 @@
 /* chpetri.com, shared frame. Anlassblau: one tempered-steel blue ground, pale "blank" steel ink.
-   Every page links this file; the build inlines it with the page's own stylesheet. */
-
-@font-face {
-  font-family: "Baskervville";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("./fonts/baskervville.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Saira Extra Condensed";
-  font-style: normal;
-  font-weight: 300 500;
-  font-display: swap;
-  src: url("./fonts/saira-extra-condensed.woff2") format("woff2");
-}
+   Every page links this file; the build inlines it with the page's own stylesheet.
+   Only what the start page uses belongs here: every byte counts against its first round trip.
+   What only the sub-pages use goes into pages.css. */
 
 :root {
   color-scheme: dark;
@@ -26,8 +12,6 @@
   --ink-3: #a3afcc;
   --rule: rgba(232, 236, 244, 0.26);
   --rule-soft: rgba(232, 236, 244, 0.13);
-  --serif: "Baskervville", "Baskerville", "Libre Baskerville", Georgia, serif;
-  --display: "Saira Extra Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
   --edge: clamp(16px, 2vw, 30px);
   --bar: 72px;
   /* height a pinned corner bar covers at the top and the bottom edge (0 when the bars scroll) */
@@ -93,22 +77,8 @@ a:focus-visible { text-decoration-color: currentColor; }
 
 p { margin: 0; }
 h1, h2, h3, h4 { margin: 0; font-weight: 400; line-height: 1.15; text-wrap: balance; }
-ul, ol { margin: 0; padding: 0; }
-time { font-variant-numeric: lining-nums tabular-nums; }
 
 .nobr { white-space: nowrap; }
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
 
 .skip-link {
   position: fixed;
@@ -173,17 +143,6 @@ time { font-variant-numeric: lining-nums tabular-nums; }
 
 .corners a:focus-visible { outline-offset: -7px; }
 
-.corners a[aria-current="page"] { color: var(--ink); }
-
-/* the current page carries one raster dot, the pixel of the engraving */
-.corners a[aria-current="page"]::before {
-  content: "";
-  width: 0.42em;
-  height: 0.42em;
-  margin-right: 0.7em;
-  background: currentColor;
-}
-
 .corners-top { view-transition-name: corners-top; }
 .corners-bottom { view-transition-name: corners-bottom; }
 
@@ -202,36 +161,6 @@ time { font-variant-numeric: lining-nums tabular-nums; }
   :root { --bar: 60px; }
   .corners { font-size: 0.8125rem; letter-spacing: 0.18em; }
   .corners a:last-child { margin-right: calc(-10px - 0.18em); }
-  .corners a[aria-current="page"]::before { margin-right: 0.55em; }
-}
-
-@media print {
-  :root {
-    color-scheme: light;
-    --ground: #fff;
-    --ink: #141a33;
-    --ink-soft: #1f2640;
-    --ink-2: #3a4466;
-    --ink-3: #4f5878;
-    --rule: #b9bfd0;
-    --rule-soft: #dde1ea;
-  }
-
-  @page { size: A4; margin: 14mm; }
-
-  html, body { background: #fff; }
-  body { display: block; }
-  .corners,
-  .skip-link { display: none !important; }
-  a { text-decoration: none; }
-}
-
-/* Windows contrast themes replace backgrounds, which would erase the square markers */
-@media (forced-colors: active) {
-  .corners a[aria-current="page"]::before {
-    forced-color-adjust: none;
-    background: CanvasText;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

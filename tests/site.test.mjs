@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile, readdir, stat } from "node:fs/promises";
-import { gzipSync } from "node:zlib";
+import { brotliCompressSync, constants, gzipSync } from "node:zlib";
 import test from "node:test";
 
 const root = new URL("../", import.meta.url);
@@ -52,8 +52,13 @@ test("every page has route metadata and a restrictive browser policy", async () 
     assert.match(html, new RegExp(`<title>${expectedTitles[path]}</title>`));
     assert.match(html, /<meta name="description" content="[^"]+">/);
     assert.match(html, /Content-Security-Policy/);
-    assert.match(html, /connect-src 'none'/);
-    assert.match(html, /object-src 'none'/);
+    if (path === "index.html") {
+      // default-src 'none' also covers scripts, connections and plugins
+      assert.match(html, /default-src 'none'/);
+    } else {
+      assert.match(html, /connect-src 'none'/);
+      assert.match(html, /object-src 'none'/);
+    }
     assert.match(html, /base-uri 'none'/);
     assert.match(html, /form-action 'none'/);
     assert.match(html, /<meta name="referrer" content="no-referrer">/);
@@ -219,13 +224,26 @@ test("each page fits in the first TCP round trip: HTML with inline CSS under 13.
   }
 });
 
+// The rule above is arithmetic. Measured in real Chrome on fresh connections to the live
+// server (2026-11, over a VPN with 1265-byte packets): TLS tickets and the HTTP/2 setup
+// use up packets, and the page travels as one TLS record, so the browser can read nothing
+// until its last byte is there. Up to 9,400 bytes arrived in the first round trip in 38 of
+// 39 samples, from 11,000 bytes never. The server compresses on the fly at Brotli level 5.
+const startPageBudget = 9400;
+
+test("start page really fits in the first round trip: at most 9,400 bytes as the server compresses it", async () => {
+  const html = await readFile(new URL("index.html", dist));
+  const sent = brotliCompressSync(html, { params: { [constants.BROTLI_PARAM_QUALITY]: 5 } }).byteLength;
+  assert.ok(sent <= startPageBudget, `index.html is ${sent} bytes at Brotli level 5 (limit ${startPageBudget})`);
+});
+
 test("start page renders completely from its first response: fonts and engraving inline", async () => {
   const html = await page("index.html");
   const css = html.match(/<style>([\s\S]*?)<\/style>/)[1];
   const startFaces = [...css.matchAll(/@font-face\{font-family:"?(Baskervville Start|Saira Start)"?[^}]*src:url\(([^)]*)\)/g)];
   assert.equal(startFaces.length, 2, "both start-page font subsets are declared");
   for (const [, family, url] of startFaces) assert.match(url, /^"?data:font\/woff2;base64,/, `${family} is inlined`);
-  assert.match(css, /url\("?data:image\/png;base64,/, "the engraving is inlined");
+  assert.match(css, /url\("?data:image\/webp;base64,/, "the lossless engraving is inlined");
   assert.doesNotMatch(html, /<link rel="preload"/, "nothing to preload: everything is already in the response");
   // the start page's font stacks name only its inline subsets and local faces; a full web
   // font in the stack would be fetched while the subsets decode (44 kB and a layout shift)
@@ -239,9 +257,10 @@ test("start page renders completely from its first response: fonts and engraving
   const glyphs = new Set([...(await readFile(new URL("fonts/home/glyphs.txt", root), "utf8")).replace(/\n$/, "")]);
   const text = (fragment) => fragment.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
   const body = html.match(/<body>([\s\S]*)<\/body>/)[1].replace(/<a class="skip-link"[^>]*>[^<]*<\/a>/, "");
-  // corner labels and the greeting are set in capitals by CSS
-  const capitals = [...body.matchAll(/<(?:header|footer|h1)\b[\s\S]*?<\/(?:header|footer|h1)>/g)].map(([fragment]) => text(fragment).toUpperCase()).join("");
-  const missing = [...new Set([...text(body), ...capitals])].filter((char) => !glyphs.has(char));
+  // corner labels and the greeting are set in capitals by CSS, so only their capitals are drawn
+  const capitalised = /<(?:header|footer|h1)\b[\s\S]*?<\/(?:header|footer|h1)>/g;
+  const capitals = [...body.matchAll(capitalised)].map(([fragment]) => text(fragment).toUpperCase()).join("");
+  const missing = [...new Set([...text(body.replace(capitalised, "")), ...capitals])].filter((char) => !glyphs.has(char));
   assert.deepEqual(missing, [], `start-page subset lacks ${missing.join("")}`);
 });
 
@@ -251,7 +270,7 @@ test("built assets stay within the agreed performance budgets", async () => {
   assert.equal(assets.filter((name) => name.endsWith(".css")).length, 0, "CSS must be inlined, not emitted");
   assert.equal(assets.filter((name) => name.endsWith(".js")).length, 0);
   assert.deepEqual(fontFiles.map((name) => name.replace(/-[A-Za-z0-9_-]{8}\.woff2$/, "")).sort(), ["baskervville", "saira-extra-condensed"]);
-  assert.equal(assets.filter((name) => name.endsWith(".png")).length, 0, "the engraving ships inline, not as a file");
+  assert.equal(assets.filter((name) => /\.(png|webp)$/.test(name)).length, 0, "the engraving ships inline, not as a file");
 
   let fontBytes = 0;
   for (const name of fontFiles) {
@@ -269,23 +288,25 @@ test("source has zero runtime dependencies and includes print, reduced-motion, a
 
   const base = await readFile(new URL("base.css", root), "utf8");
   const home = await readFile(new URL("home.css", root), "utf8");
+  const pages = await readFile(new URL("pages.css", root), "utf8");
   const cv = await readFile(new URL("cv.css", root), "utf8");
-  assert.match(base, /@media print/);
+  assert.match(pages, /@media print/);
+  assert.match(home, /@media print/);
   assert.match(cv, /@media print/);
   assert.match(base, /prefers-reduced-motion: reduce/);
-  assert.match(base, /forced-colors: active/);
+  assert.match(pages, /forced-colors: active/);
   // keyboard focus must stop clear of both pinned bars (WCAG 2.4.11), and the bars
   // only pin where the screen is tall enough to spare them
   assert.match(base, /scroll-padding-block: calc\(var\(--pinned\) \+ 16px\)/);
   assert.match(base, /@media \(min-width: 47\.5em\) and \(min-height: 720px\) \{\s*:root \{ --pinned: var\(--bar\); \}/);
   // width breakpoints follow the reader's default font size, and no word can widen the page
-  const pages = await readFile(new URL("pages.css", root), "utf8");
   for (const css of [base, home, pages, cv]) assert.doesNotMatch(css, /@media[^{]*width: \d+px/);
   assert.match(base, /body \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*overflow-wrap: break-word;/);
   assert.match(base, /\.corners \{ flex-wrap: wrap; \}/);
   // inline links are marked by their underline alone, so it must reach 3:1
   assert.match(base, /a \{[^}]*text-decoration-color: var\(--ink-3\);/);
-  assert.equal((base.match(/@font-face/g) ?? []).length, 2);
+  assert.equal((base.match(/@font-face/g) ?? []).length, 0);
+  assert.equal((pages.match(/@font-face/g) ?? []).length, 2);
   assert.equal((home.match(/@font-face/g) ?? []).length, 2);
   assert.match(await readFile(new URL("fonts/OFL-Baskervville.txt", root), "utf8"), /SIL Open Font License/);
   assert.match(await readFile(new URL("fonts/OFL-Saira.txt", root), "utf8"), /SIL Open Font License/);

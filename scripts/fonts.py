@@ -35,25 +35,27 @@ LATIN = ("U+0020-007E,U+00A0-00FF,U+2011,U+2013-2014,U+2018-2019,U+201C-201E,"
 FEATURES = ["kern", "liga", "ccmp", "locl", "mark", "mkmk", "case", "lnum", "tnum", "pnum"]
 
 # Every character the start page renders in the reading face. Corner labels are
-# set in capitals by CSS, so their capital forms are listed too. The skip link
+# set in capitals by CSS, so only their capital forms are listed. The skip link
 # is set in the system face and needs no glyphs here.
 HOME_GREETING = "HI."
 HOME_TEXT = (
-    "Christian Petri CV Projekte Kontakt"
     "CHRISTIAN PETRI CV PROJEKTE KONTAKT"
     "Ich bin Christian, Berater für IT-Sicherheit aus Darmstadt."
 )
+# The inline subsets keep only copyright and licence (name IDs 0, 13, 14, as the
+# OFL asks) and no outline for missing glyphs: every byte counts there.
+HOME_OPTIONS = {"features": ["kern"], "name_ids": [0, 13, 14], "notdef_outline": False}
 
 
-def save_woff2(font, unicodes=None, text=None, features=FEATURES):
+def save_woff2(font, unicodes=None, text=None, features=FEATURES, name_ids=(0, 1, 2, 4, 6, 13, 14), notdef_outline=True):
     options = subset.Options()
     options.flavor = "woff2"
     options.layout_features = features
     options.hinting = False
     options.desubroutinize = True
-    options.name_IDs = [0, 1, 2, 4, 6, 13, 14]
+    options.name_IDs = list(name_ids)
     options.name_languages = [0x409]
-    options.notdef_outline = True
+    options.notdef_outline = notdef_outline
     subsetter = subset.Subsetter(options)
     if unicodes is not None:
         subsetter.populate(unicodes=unicodes)
@@ -105,11 +107,11 @@ def main(saira_path, baskervville_path):
     write(os.path.join(FONTS, "baskervville.woff2"), save_woff2(baskervville, unicodes=latin))
 
     saira_light = instance(saira_path, {"wdth": 62.5, "wght": 300})
-    write(os.path.join(HOME, "saira-hi.woff2"), save_woff2(saira_light, text=HOME_GREETING, features=["kern"]))
+    write(os.path.join(HOME, "saira-hi.woff2"), save_woff2(saira_light, text=HOME_GREETING, **HOME_OPTIONS))
 
     baskervville_regular = instance(baskervville_path, {"wght": 400})
     write(os.path.join(HOME, "baskervville-home.woff2"),
-          save_woff2(baskervville_regular, text=HOME_TEXT, features=["kern"]))
+          save_woff2(baskervville_regular, text=HOME_TEXT, **HOME_OPTIONS))
 
     glyphs = "".join(sorted(set(HOME_TEXT + HOME_GREETING)))
     with open(os.path.join(HOME, "glyphs.txt"), "w", encoding="utf-8") as handle:

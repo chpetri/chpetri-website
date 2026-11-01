@@ -150,7 +150,7 @@ Two voices from the plate's era and its machine. Saira Extra Condensed, light an
 - Two faces with fixed jobs: Saira announces and labels, Baskervville reads and sets the corners.
 - The square raster dot is the only marker: current page, chosen language, list bullets.
 - Flat material: hairlines at 26 % and 13 % ink, no box borders, no shadows, no radius.
-- The start page renders completely from its first response (inline font subsets and engraving, under 13.6 kB gzipped); no JavaScript anywhere.
+- The start page renders completely from its first response (inline font subsets and engraving, at most 9,400 bytes at the server's Brotli level 5); no JavaScript anywhere.
 
 ## Colors
 
@@ -271,7 +271,7 @@ Blank Steel block with Anlassblau system-ui text, fixed at 16px, shown on focus.
 - **Do** size reading text and labels in rem, width breakpoints in em, and measures on the start page in em.
 - **Do** mark state with the square raster dot, and give it a system colour in forced-colours mode.
 - **Do** link exactly one stylesheet per page that `@import`s the shared frame first, so page rules win ties.
-- **Do** keep the start page complete in its first response: inline subsets and art only, font stacks without the full web fonts, under 13.6 kB gzipped; rerun `scripts/fonts.py` when its text changes.
+- **Do** keep the start page complete in its first response: inline subsets and art only, font stacks without the full web fonts, at most 9,400 bytes at Brotli level 5; rerun `scripts/fonts.py` when its text changes, and put CSS only the sub-pages use into `pages.css`, not `base.css`.
 - **Do** reprint both CV PDFs after any CV or print change, check that `pdftotext` shows no spaced capitals and no keyword joined across a line-end hyphen, and keep the download labels' sizes true.
 
 ### Don't:

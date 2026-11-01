@@ -63,9 +63,9 @@
   left: 50%;
   top: -78%;
   height: 178%;
-  aspect-ratio: 229 / 320;
+  aspect-ratio: 5 / 7;
   translate: -50% 0;
-  background: url("./art/schloss.png") 0 0 / 100% 100% no-repeat;
+  background: url("./art/schloss.webp") 0 0 / 100% 100% no-repeat;
   image-rendering: pixelated;
   opacity: 0.34;
   animation: pull 1.4s steps(18, end) 0.15s both;
@@ -89,4 +89,10 @@
 
 @media (max-width: 47.4375em) {
   .hi-line { font-size: 1.1875rem; }
+}
+
+/* the sub-pages' full print layout is not in this file; dark ink keeps the greeting legible on paper */
+@media print {
+  :root { --ground: #fff; --ink: #141a33; }
+  .corners { display: none; }
 }

@@ -10,6 +10,11 @@
 
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
 
+    # CV downloads stay public, but search results should show the HTML CV.
+    <FilesMatch "(?i)^Christian_Petri_CV_(DE|EN)\.pdf$">
+        Header always set X-Robots-Tag "noindex"
+    </FilesMatch>
+
     # Font files carry a content hash in their name (assets/name-XXXXXXXX.woff2):
     # a new font gets a new name, so browsers may keep the old one forever.
     <FilesMatch "-[A-Za-z0-9_-]{8}\.woff2$">
@@ -22,8 +27,8 @@
     </FilesMatch>
 </IfModule>
 
-# Every page is built to fit the first TCP round trip (14,600 bytes) only when
-# it is sent compressed; the start page is about 20 kB raw and 13 kB gzipped.
+# The start page is built to fit the first round trip only when it is sent
+# compressed: about 16 kB raw, 9.4 kB as Brotli (the budget in tests/site.test.mjs).
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml image/svg+xml
 </IfModule>
