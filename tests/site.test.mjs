@@ -111,6 +111,12 @@ test("CV is factual, bilingual, German first, private-data-minimised, and script
   assert.match(html, /Deutsch – Muttersprache; Englisch – B2/);
   assert.match(html, /in lab environments/);
   assert.doesNotMatch(html, /<script/);
+  // no private contact data: the site's address is the only one, no phone number, no postal address
+  const body = html.match(/<body>[\s\S]*<\/body>/)[0];
+  const text = body.replace(/<[^>]+>/g, " ");
+  assert.deepEqual([...new Set(body.match(/[\w.+-]+@[\w-]+\.[\w.-]+/g))], ["contact@chpetri.com"]);
+  assert.doesNotMatch(text, /\+\d{2}[\s/-]*\d{3}|\b0\d{2,4}[\s/-]*\d{5,}/);
+  assert.doesNotMatch(text, /\b\d{5}\s+\p{Lu}\p{Ll}+/u);
 });
 
 test("CV carries the verified certifications and nothing invented", async () => {
