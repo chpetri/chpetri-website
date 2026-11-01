@@ -29,7 +29,7 @@ The completed security training, dated certifications, and IHK case study suppor
 - Visitors come from application documents, LinkedIn (linkedin.com/in/christianpetri1), GitHub (github.com/chpetri), and TryHackMe (tryhackme.com/p/chpetri).
 - The CV is read on screen and printed; it exists in English and German on one page with a language switch and a print layout.
 - Location: Darmstadt, Germany. Contact: contact@chpetri.com.
-- Source lives in this repository (chpetri/chpetri.github.io, private). The domain www.chpetri.com is served from a Hetzner web space.
+- Source lives in this repository (chpetri/chpetri-website, private). The domain www.chpetri.com is served from a Hetzner web space.
 - The deployed site (last-modified 2026-09-11) is newer than the repository (2026-08-30): copy on the home page and CV was revised, the Projects page gained the IHK case study, and the PDF `docs/Christian_Petri_IHK_Projektarbeit_Sicherer_Fernzugriff.pdf` (615 KB) exists only on the host. A full HTTPS mirror of the deployed site is the content source of truth for the rebuild.
 
 ## Capabilities and Constraints
