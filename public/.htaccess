@@ -1,31 +1,44 @@
-<IfModule mod_headers.c>
-    Header always set Strict-Transport-Security "max-age=31536000"
+# Security headers. Deliberately not wrapped in <IfModule mod_headers.c>: if the module
+# were ever missing, the site should fail loudly (500) instead of silently losing them.
+# No includeSubDomains: autoconfig.chpetri.com (mail client setup at Hetzner) has no
+# certificate for its name and must stay reachable over plain HTTP.
+Header always set Strict-Transport-Security "max-age=63072000"
 
-    Header always set X-Content-Type-Options "nosniff"
+Header always set X-Content-Type-Options "nosniff"
 
-    Header always set X-Frame-Options "DENY"
-    Header always set Content-Security-Policy "frame-ancestors 'none';"
+Header always set X-Frame-Options "DENY"
+Header always set Content-Security-Policy "frame-ancestors 'none';"
 
-    Header always set Referrer-Policy "no-referrer"
+Header always set Referrer-Policy "no-referrer"
 
-    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
 
-    # CV downloads stay public, but search results should show the HTML CV.
-    <FilesMatch "(?i)^Christian_Petri_CV_(DE|EN)\.pdf$">
-        Header always set X-Robots-Tag "noindex"
-    </FilesMatch>
+# The site ships no scripts and embeds nothing from elsewhere, so it needs no window
+# or resource sharing with other origins.
+Header always set Cross-Origin-Opener-Policy "same-origin"
+Header always set Cross-Origin-Resource-Policy "same-origin"
 
-    # Font files carry a content hash in their name (assets/name-XXXXXXXX.woff2):
-    # a new font gets a new name, so browsers may keep the old one forever.
-    <FilesMatch "-[A-Za-z0-9_-]{8}\.woff2$">
-        Header set Cache-Control "public, max-age=31536000, immutable"
-    </FilesMatch>
+# Link previews and search results show these two on other sites.
+<FilesMatch "^(og\.png|favicon\.svg)$">
+    Header always set Cross-Origin-Resource-Policy "cross-origin"
+</FilesMatch>
 
-    # Pages are updated in place: browsers revalidate them on every visit.
-    <FilesMatch "\.html$">
-        Header set Cache-Control "no-cache"
-    </FilesMatch>
-</IfModule>
+# CV downloads stay public, but search results should show the HTML CV.
+<FilesMatch "(?i)^Christian_Petri_CV_(DE|EN)\.pdf$">
+    Header always set X-Robots-Tag "noindex"
+</FilesMatch>
+
+# Font files carry a content hash in their name (assets/name-XXXXXXXX.woff2):
+# a new font gets a new name, so browsers may keep the old one forever.
+<FilesMatch "-[A-Za-z0-9_-]{8}\.woff2$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
+
+# Pages, documents and text files are updated in place under the same name:
+# browsers revalidate them on every visit, so a replaced CV is never served stale.
+<FilesMatch "\.(html|pdf|txt|xml)$">
+    Header set Cache-Control "no-cache"
+</FilesMatch>
 
 # The start page is built to fit the first round trip only when it is sent
 # compressed: about 16 kB raw, 9.4 kB as Brotli (the budget in tests/site.test.mjs).
@@ -36,9 +49,16 @@
 Options -Indexes
 ErrorDocument 404 /404.html
 
-<FilesMatch "(?i)\.(bak|old|tmp|log|sql|ini)$">
+# Dotfiles are never content. (.well-known is a directory, not a file, and stays reachable.)
+<FilesMatch "^\.">
     Require all denied
 </FilesMatch>
+
+# Backups, editor leftovers, archives and logs are never content either.
+<FilesMatch "(?i)(\.(bak|old|orig|tmp|swp|log|sql|ini|env|zip|gz|tgz|tar)|~)$">
+    Require all denied
+</FilesMatch>
+
 # Old routes (the CV link is in circulation on application documents)
 Redirect 301 /about/ /cv/
 Redirect 301 /projects/ /work/
