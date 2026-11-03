@@ -101,8 +101,6 @@
 .cv-head h2 { font-size: clamp(60px, 8vw, 116px); }
 .cv-head .cv-role { margin-top: 14px; color: var(--ink-2); }
 
-.cv-actions { margin: 0 0 clamp(28px, 4vh, 40px); }
-
 .cv-section {
   display: grid;
   grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
@@ -232,8 +230,7 @@
 }
 
 @media print {
-  .lang-controls,
-  .cv-actions { display: none !important; }
+  .lang-controls { display: none !important; }
 
   .page { width: auto; padding: 0; }
   .cv-head { padding: 0 0 6mm; }

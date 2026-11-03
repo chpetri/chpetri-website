@@ -98,8 +98,8 @@ test("CV is factual, bilingual, German first, private-data-minimised, and script
   assert.match(html, /<\/fieldset>\s*<div class="lang-panels">\s*<article class="cv cv-de"/);
   // sections stay unnamed, otherwise every one becomes a landmark region
   assert.doesNotMatch(html, /<section class="cv-section" aria-labelledby/);
-  assert.match(html, /href="\.\.\/docs\/Christian_Petri_CV_EN\.pdf" download=/);
-  assert.match(html, /href="\.\.\/docs\/Christian_Petri_CV_DE\.pdf" download=/);
+  // the CV is read on the page; the PDF version is sent with applications only
+  assert.doesNotMatch(html, /\.pdf"/);
   assert.match(html, /<article class="cv cv-de" lang="de"/);
   assert.match(html, /Technical Support \/ IT Technician/);
   assert.match(html, /Technischer Support \/ IT-Techniker/);
@@ -125,7 +125,7 @@ test("CV carries the verified certifications and nothing invented", async () => 
 });
 
 test("every download label states the file's real size", async () => {
-  for (const path of ["cv/index.html", "work/index.html"]) {
+  for (const path of ["work/index.html"]) {
     const html = await page(path);
     for (const [, href, kilobytes] of html.matchAll(/<a class="button" href="\.\.\/(docs\/[^"]+\.pdf)"[^>]*>[^<]*<small>PDF, (\d+) KB,/g)) {
       const bytes = (await stat(new URL(href, dist))).size;
@@ -216,12 +216,10 @@ test("security.txt names the contact address and has not expired", async () => {
 
 test("every PDF links only to https addresses and to the site's own mailbox", async () => {
   const docs = (await readdir(new URL("docs/", dist))).filter((name) => name.endsWith(".pdf"));
-  assert.ok(docs.length >= 3);
+  assert.deepEqual(docs, ["Christian_Petri_IHK_Projektarbeit_Sicherer_Fernzugriff.pdf"]);
   for (const name of docs) {
     const pdf = (await readFile(new URL(`docs/${name}`, dist))).toString("latin1");
     const uris = [...pdf.matchAll(/\/URI\s*\(((?:\\.|[^\\)])*)\)/g)].map(([, uri]) => uri);
-    // a CV printed from a local preview would link to http://127.0.0.1:.../work/
-    if (/_CV_/.test(name)) assert.ok(uris.includes("https://chpetri.com/work/"), `${name} must link to the case study`);
     for (const uri of uris) {
       assert.match(uri, /^(?:https:\/\/|mailto:contact@chpetri\.com$)/, `${name} links to ${uri}`);
       assert.doesNotMatch(uri, /localhost|127\.0\.0\.1|\[::1\]/, `${name} links to ${uri}`);
@@ -242,6 +240,8 @@ test("old routes redirect to their new homes without scripts", async () => {
   assert.match(htaccess, /Redirect 301 \/about\/ \/cv\//);
   assert.match(htaccess, /ErrorDocument 404 \/404\.html/);
   assert.match(htaccess, /Redirect 301 \/projects\/ \/work\//);
+  // withdrawn CV PDFs: old links land on the CV page
+  for (const lang of ["DE", "EN"]) assert.match(htaccess, new RegExp(`Redirect 301 /docs/Christian_Petri_CV_${lang}\\.pdf /cv/`));
 });
 
 test("no page loads a script and every resource is first-party", async () => {

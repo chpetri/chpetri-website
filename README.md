@@ -25,12 +25,12 @@ Der Test erstellt die Website und prüft unter anderem Inhalte, Links, einzelne 
 
 - `index.html`, `cv/`, `work/`, `contact/`: die Seiten der Website
 - `base.css`, `home.css`, `cv.css`, `pages.css`: Gestaltung
-- `public/docs/`: Lebensläufe und IHK-Projektarbeit als PDF
+- `public/docs/`: IHK-Projektarbeit als PDF
 - `fonts/` und `art/`: Schriften und Grafiken mit Quellen- und Lizenzangaben
 - `public/.htaccess`: Sicherheits-Header und Regeln für den Apache-Server
 - `tests/`: automatische Prüfungen
 
-Die Lebensläufe stehen auf Deutsch und Englisch zur Verfügung. Bei Änderungen am Lebenslauf müssen die PDF-Dateien mit der HTML-Version abgeglichen werden.
+Der Lebenslauf steht auf Deutsch und Englisch auf der Seite `/cv/`. Eine PDF-Fassung gibt es nur mit Bewerbungen, nicht zum Download.
 
 ## Veröffentlichung
 

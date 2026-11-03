@@ -23,10 +23,6 @@ Header always set Cross-Origin-Resource-Policy "same-origin"
     Header always set Cross-Origin-Resource-Policy "cross-origin"
 </FilesMatch>
 
-# CV downloads stay public, but search results should show the HTML CV.
-<FilesMatch "(?i)^Christian_Petri_CV_(DE|EN)\.pdf$">
-    Header always set X-Robots-Tag "noindex"
-</FilesMatch>
 
 # Font files carry a content hash in their name (assets/name-XXXXXXXX.woff2):
 # a new font gets a new name, so browsers may keep the old one forever.
@@ -62,3 +58,6 @@ ErrorDocument 404 /404.html
 # Old routes (the CV link is in circulation on application documents)
 Redirect 301 /about/ /cv/
 Redirect 301 /projects/ /work/
+# The CV PDFs were withdrawn (2026-11): the CV is read on the page; the PDF comes with an application.
+Redirect 301 /docs/Christian_Petri_CV_DE.pdf /cv/
+Redirect 301 /docs/Christian_Petri_CV_EN.pdf /cv/
