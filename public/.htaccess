@@ -42,6 +42,10 @@ Header always set Cross-Origin-Resource-Policy "same-origin"
     AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml image/svg+xml
 </IfModule>
 
+# Text and HTML are UTF-8; scanners such as Internet.nl expect it said in the header
+# (RFC 9116 asks for text/plain; charset=utf-8 on security.txt).
+AddDefaultCharset utf-8
+
 Options -Indexes
 ErrorDocument 404 /404.html
 

@@ -206,7 +206,11 @@ test("security.txt names the contact address and has not expired", async () => {
   const text = await readFile(new URL(".well-known/security.txt", dist), "utf8");
   const fields = Object.fromEntries([...text.matchAll(/^([\w-]+): (.+)$/gm)].map(([, name, value]) => [name, value]));
   assert.equal(fields.Contact, "mailto:contact@chpetri.com");
-  assert.equal(fields.Canonical, "https://chpetri.com/.well-known/security.txt");
+  // the site answers on both names, so both are canonical
+  const canonical = [...text.matchAll(/^Canonical: (.+)$/gm)].map(([, url]) => url);
+  assert.deepEqual(canonical, ["https://chpetri.com/.well-known/security.txt", "https://www.chpetri.com/.well-known/security.txt"]);
+  const htaccess = await readFile(new URL(".htaccess", dist), "utf8");
+  assert.match(htaccess, /^AddDefaultCharset utf-8$/m, "security.txt must be served as text/plain; charset=utf-8");
   assert.equal(fields["Preferred-Languages"], "de, en");
   // RFC 9116: at most a year ahead; when this fails, set a new date and deploy
   const expires = Date.parse(fields.Expires);
