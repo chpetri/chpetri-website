@@ -236,6 +236,22 @@ time { font-variant-numeric: lining-nums tabular-nums; }
 /* an address has no spaces; let it break rather than push the page sideways */
 .profiles a { display: inline-flex; align-items: center; min-height: 32px; overflow-wrap: anywhere; }
 
+/* Datenschutz */
+
+.legal h1 { margin-bottom: clamp(20px, 4vh, 36px); }
+.legal .prose h2 {
+  margin: 2em 0 0.5em;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.legal .prose h2:first-child { margin-top: 0; }
+.legal-date { color: var(--ink-3); }
+.legal-link { font-size: 1rem; }
+
 /* 404 */
 
 .lost {
