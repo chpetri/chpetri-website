@@ -27,10 +27,19 @@ Der Test erstellt die Website und prüft unter anderem Inhalte, Links, einzelne 
 - `base.css`, `home.css`, `cv.css`, `pages.css`: Gestaltung
 - `public/docs/`: Lebensläufe und IHK-Projektarbeit als PDF
 - `fonts/` und `art/`: Schriften und Grafiken mit Quellen- und Lizenzangaben
+- `public/.htaccess`: Sicherheits-Header und Regeln für den Apache-Server
 - `tests/`: automatische Prüfungen
 
 Die Lebensläufe stehen auf Deutsch und Englisch zur Verfügung. Bei Änderungen am Lebenslauf müssen die PDF-Dateien mit der HTML-Version abgeglichen werden.
 
 ## Veröffentlichung
 
-Die Website wird bei Hetzner gehostet. `scripts/deploy-ftp.sh` prüft und erstellt die Website und lädt `dist/` per FTPS hoch. Es überschreibt oder ergänzt Dateien auf dem Server; entfernte Dateien müssen dort separat gelöscht werden.
+Die Website wird bei Hetzner gehostet. `scripts/deploy-ftp.sh` veröffentlicht nur einen sauberen, auf GitHub gepushten Stand: Es installiert die Abhängigkeiten neu, prüft und erstellt die Website, gleicht `dist/` per FTPS (lftp) mit dem Webspace ab und vergleicht danach jede Datei mit der Live-Seite. Die Zugangsdaten liegen nur in `~/.netrc`.
+
+```bash
+DRY_RUN=1 scripts/deploy-ftp.sh   # nur anzeigen, was sich ändern würde
+scripts/deploy-ftp.sh             # hochladen
+PRUNE=1 scripts/deploy-ftp.sh     # zusätzlich veraltete Dateien auf dem Server löschen (mit Rückfrage)
+```
+
+`public/.well-known/security.txt` läuft am angegebenen `Expires`-Datum ab; ab dann schlägt `npm test` fehl, bis ein neues Datum (höchstens ein Jahr voraus) eingetragen ist.

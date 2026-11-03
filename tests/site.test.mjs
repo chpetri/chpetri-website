@@ -28,13 +28,13 @@ function rootVariables(css) {
   return Object.fromEntries([...body.matchAll(/--([\w-]+):\s*(#[\da-f]{6})/gi)].map((match) => [match[1], match[2]]));
 }
 
-test("build contains every static route, the Pages marker, and the shipped assets", async () => {
+test("build contains every static route and the shipped assets", async () => {
   for (const path of pages) assert.equal((await stat(new URL(path, dist))).isFile(), true);
-  assert.equal((await stat(new URL(".nojekyll", dist))).isFile(), true);
   assert.deepEqual(
     (await readdir(dist)).sort(),
-    [".htaccess", ".nojekyll", "404.html", "about", "assets", "contact", "cv", "docs", "favicon.svg", "index.html", "og.png", "projects", "robots.txt", "sitemap.xml", "work"],
+    [".htaccess", ".well-known", "404.html", "about", "assets", "contact", "cv", "docs", "favicon.svg", "index.html", "og.png", "projects", "robots.txt", "sitemap.xml", "work"],
   );
+  assert.deepEqual(await readdir(new URL(".well-known/", dist)), ["security.txt"]);
   assert.equal((await stat(new URL("docs/Christian_Petri_IHK_Projektarbeit_Sicherer_Fernzugriff.pdf", dist))).isFile(), true);
 });
 
@@ -52,13 +52,9 @@ test("every page has route metadata and a restrictive browser policy", async () 
     assert.match(html, new RegExp(`<title>${expectedTitles[path]}</title>`));
     assert.match(html, /<meta name="description" content="[^"]+">/);
     assert.match(html, /Content-Security-Policy/);
-    if (path === "index.html") {
-      // default-src 'none' also covers scripts, connections and plugins
-      assert.match(html, /default-src 'none'/);
-    } else {
-      assert.match(html, /connect-src 'none'/);
-      assert.match(html, /object-src 'none'/);
-    }
+    // default-src 'none' also covers scripts, connections, frames and plugins
+    assert.match(html, /default-src 'none'/);
+    assert.doesNotMatch(html, /script-src|'unsafe-/);
     assert.match(html, /base-uri 'none'/);
     assert.match(html, /form-action 'none'/);
     assert.match(html, /<meta name="referrer" content="no-referrer">/);
@@ -167,11 +163,63 @@ test("the Apache host compresses pages and caches hashed fonts", async () => {
   const htaccess = await readFile(new URL(".htaccess", dist), "utf8");
   assert.match(htaccess, /AddOutputFilterByType DEFLATE text\/html/);
   assert.match(htaccess, /max-age=31536000, immutable/);
+  // documents are replaced under the same name, so browsers must revalidate them
+  assert.match(htaccess, /<FilesMatch "\\\.\(html\|pdf\|txt\|xml\)\$">\s*Header set Cache-Control "no-cache"/);
+});
+
+test("the Apache host sends the security headers and serves no hidden files", async () => {
+  const htaccess = await readFile(new URL(".htaccess", dist), "utf8");
+  // a missing mod_headers must fail loudly instead of silently dropping the headers
+  assert.doesNotMatch(htaccess, /^\s*<IfModule mod_headers\.c>/m);
+  const headers = Object.fromEntries(
+    [...htaccess.matchAll(/^Header always set ([\w-]+) "([^"]*)"$/gm)].map(([, name, value]) => [name, value]),
+  );
+  assert.match(headers["Strict-Transport-Security"], /^max-age=(\d+)/);
+  assert.ok(Number(headers["Strict-Transport-Security"].match(/\d+/)[0]) >= 31536000, "HSTS must last at least a year");
+  assert.equal(headers["X-Content-Type-Options"], "nosniff");
+  assert.equal(headers["X-Frame-Options"], "DENY");
+  assert.equal(headers["Content-Security-Policy"], "frame-ancestors 'none';");
+  assert.equal(headers["Referrer-Policy"], "no-referrer");
+  assert.match(headers["Permissions-Policy"], /camera=\(\)/);
+  assert.equal(headers["Cross-Origin-Opener-Policy"], "same-origin");
+  assert.equal(headers["Cross-Origin-Resource-Policy"], "same-origin");
+  assert.match(htaccess, /^Options -Indexes$/m);
+  assert.match(htaccess, /<FilesMatch "\^\\\.">\s*Require all denied/);
+  assert.match(htaccess, /<FilesMatch "\(\?i\)\(\\\.\(bak\|[^"]*\benv\b[^"]*">\s*Require all denied/);
+});
+
+test("security.txt names the contact address and has not expired", async () => {
+  const text = await readFile(new URL(".well-known/security.txt", dist), "utf8");
+  const fields = Object.fromEntries([...text.matchAll(/^([\w-]+): (.+)$/gm)].map(([, name, value]) => [name, value]));
+  assert.equal(fields.Contact, "mailto:contact@chpetri.com");
+  assert.equal(fields.Canonical, "https://chpetri.com/.well-known/security.txt");
+  assert.equal(fields["Preferred-Languages"], "de, en");
+  // RFC 9116: at most a year ahead; when this fails, set a new date and deploy
+  const expires = Date.parse(fields.Expires);
+  assert.ok(expires > Date.now(), `security.txt expired on ${fields.Expires}`);
+  assert.ok(expires - Date.now() <= 366 * 24 * 3600 * 1000, "Expires must be less than a year ahead");
+});
+
+test("every PDF links only to https addresses and to the site's own mailbox", async () => {
+  const docs = (await readdir(new URL("docs/", dist))).filter((name) => name.endsWith(".pdf"));
+  assert.ok(docs.length >= 3);
+  for (const name of docs) {
+    const pdf = (await readFile(new URL(`docs/${name}`, dist))).toString("latin1");
+    const uris = [...pdf.matchAll(/\/URI\s*\(((?:\\.|[^\\)])*)\)/g)].map(([, uri]) => uri);
+    // a CV printed from a local preview would link to http://127.0.0.1:.../work/
+    if (/_CV_/.test(name)) assert.ok(uris.includes("https://chpetri.com/work/"), `${name} must link to the case study`);
+    for (const uri of uris) {
+      assert.match(uri, /^(?:https:\/\/|mailto:contact@chpetri\.com$)/, `${name} links to ${uri}`);
+      assert.doesNotMatch(uri, /localhost|127\.0\.0\.1|\[::1\]/, `${name} links to ${uri}`);
+    }
+  }
 });
 
 test("old routes redirect to their new homes without scripts", async () => {
   for (const [path, target] of Object.entries(redirects)) {
     const html = await page(path);
+    assert.match(html, /<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'">/);
+    assert.match(html, /<meta name="referrer" content="no-referrer">/);
     assert.match(html, new RegExp(`<meta http-equiv="refresh" content="0; url=${target}">`));
     assert.match(html, new RegExp(`<link rel="canonical" href="https://chpetri\\.com${target}">`));
     assert.doesNotMatch(html, /<script/i);
