@@ -250,7 +250,7 @@ Baskervville capitals in Steel 2 at rest, at least 44px tall with 10px inline pa
 A fieldset holding only two visually hidden radios and their labels (DEUTSCH, ENGLISH) in the label voice; the chosen one is Blank Steel with a square before it. The two CV panels follow the fieldset, German first, and switch with `:has()`; without `:has()` both stay visible. Focus on a radio draws the ring around its label.
 
 ### CV document
-Name as headline, the role line as a label, the download button, then sections divided by Rule hairlines: a sticky label rail on the left, content on the right. Entries: date (label voice, Steel 2), title (Baskervville 600), an optional qualifier as a label, the employer in Baskervville Steel 2, then text and square-bulleted lists. Sections carry no accessible names, so they do not become landmark regions. The contact section is print-only: the screen uses the persistent corner link to Kontakt, while the standalone PDF retains email and profile links. Location appears once, in the CV header.
+Name as headline, the role line as a label, then sections divided by Rule hairlines: a sticky label rail on the left, content on the right. Entries: date (label voice, Steel 2), title (Baskervville 600), an optional qualifier as a label, the employer in Baskervville Steel 2, then text and square-bulleted lists. Sections carry no accessible names, so they do not become landmark regions. The contact section is print-only: the screen uses the persistent corner link to Kontakt, while a printed copy retains email and profile links. Location appears once, in the CV header.
 
 ### The greeting plate (signature)
 On the start page the padlock sits in the greeting's `::before`, centred, its shackle rising above the letters (top -78 %, height 178 % of the line box). On load it is pulled onto the plate once, top to bottom, in 18 raster steps (`clip-path` inset, 1.4s, 0.15s delay); with reduced motion it simply stands there. The start page's two font subsets (the greeting's three glyphs, the sentence's and corners' letters) and the engraving are inlined, and its font stacks name only those subsets and local faces.
@@ -272,7 +272,7 @@ Blank Steel block with Anlassblau system-ui text, fixed at 16px, shown on focus.
 - **Do** mark state with the square raster dot, and give it a system colour in forced-colours mode.
 - **Do** link exactly one stylesheet per page that `@import`s the shared frame first, so page rules win ties.
 - **Do** keep the start page complete in its first response: inline subsets and art only, font stacks without the full web fonts, at most 9,400 bytes at Brotli level 5; rerun `scripts/fonts.py` when its text changes, and put CSS only the sub-pages use into `pages.css`, not `base.css`.
-- **Do** reprint both CV PDFs after any CV or print change, check that `pdftotext` shows no spaced capitals and no keyword joined across a line-end hyphen, and keep the download labels' sizes true.
+- **Do** check printed CVs (sent with applications, no longer downloadable) after any CV or print change: make sure that `pdftotext` shows no spaced capitals and no keyword joined across a line-end hyphen, and keep the download label sizes on Projekte true.
 
 ### Don't:
 - **Don't** add a second hue, a gradient, a photograph or a third typeface.
