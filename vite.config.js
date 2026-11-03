@@ -65,6 +65,7 @@ export default defineConfig({
         cv: resolve(process.cwd(), "cv/index.html"),
         contact: resolve(process.cwd(), "contact/index.html"),
         work: resolve(process.cwd(), "work/index.html"),
+        privacy: resolve(process.cwd(), "datenschutz/index.html"),
         notFound: resolve(process.cwd(), "404.html"),
       },
     },

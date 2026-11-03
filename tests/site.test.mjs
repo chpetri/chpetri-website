@@ -6,7 +6,7 @@ import test from "node:test";
 
 const root = new URL("../", import.meta.url);
 const dist = new URL("../dist/", import.meta.url);
-const pages = ["index.html", "cv/index.html", "contact/index.html", "work/index.html", "404.html"];
+const pages = ["index.html", "cv/index.html", "contact/index.html", "work/index.html", "datenschutz/index.html", "404.html"];
 const redirects = { "about/index.html": "/cv/", "projects/index.html": "/work/" };
 
 async function page(path) {
@@ -32,7 +32,7 @@ test("build contains every static route and the shipped assets", async () => {
   for (const path of pages) assert.equal((await stat(new URL(path, dist))).isFile(), true);
   assert.deepEqual(
     (await readdir(dist)).sort(),
-    [".htaccess", ".well-known", "404.html", "about", "assets", "contact", "cv", "docs", "favicon.svg", "index.html", "og.png", "projects", "robots.txt", "sitemap.xml", "work"],
+    [".htaccess", ".well-known", "404.html", "about", "assets", "contact", "cv", "datenschutz", "docs", "favicon.svg", "index.html", "og.png", "projects", "robots.txt", "sitemap.xml", "work"],
   );
   assert.deepEqual(await readdir(new URL(".well-known/", dist)), ["security.txt"]);
   assert.equal((await stat(new URL("docs/Christian_Petri_IHK_Projektarbeit_Sicherer_Fernzugriff.pdf", dist))).isFile(), true);
@@ -44,6 +44,7 @@ test("every page has route metadata and a restrictive browser policy", async () 
     "cv/index.html": "CV – Christian Petri",
     "contact/index.html": "Kontakt – Christian Petri",
     "work/index.html": "Projekte – Christian Petri",
+    "datenschutz/index.html": "Datenschutz – Christian Petri",
     "404.html": "Nicht gefunden – Christian Petri",
   };
 
@@ -131,6 +132,19 @@ test("every download label states the file's real size", async () => {
       assert.equal(Number(kilobytes), Math.round(bytes / 1000), `${path}: ${href} is ${bytes} bytes`);
     }
   }
+});
+
+test("the privacy policy names the controller, the host and what is not done, and the contact page links to it", async () => {
+  const html = await page("datenschutz/index.html");
+  assert.match(html, /<h1 class="display">Datenschutz<\/h1>/);
+  assert.match(html, /Christian Petri, <a href="mailto:contact@chpetri\.com">/);
+  assert.match(html, /Hetzner Online GmbH, Industriestr\. 25, 91710 Gunzenhausen/);
+  assert.match(html, /Art\. 6 Abs\. 1 lit\. f DSGVO/);
+  assert.match(html, /keine Cookies/);
+  assert.match(html, /Art\. 77 DSGVO/);
+  // the page itself must keep its promise: no cookies, scripts or third-party requests
+  assert.doesNotMatch(html, /<script|<iframe|<img\b/i);
+  assert.match(await page("contact/index.html"), /<a href="\.\.\/datenschutz\/">Datenschutz<\/a>/);
 });
 
 test("the 404 page names the problem in its heading", async () => {
