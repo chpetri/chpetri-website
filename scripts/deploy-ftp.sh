@@ -98,7 +98,7 @@ else
 fi
 
 # Every published file must now be served byte for byte as built. Skipped: .htaccess
-# (never served) and the stubs under about/ and projects/ (Apache redirects those paths).
+# (never served).
 cd dist
 mismatch=0
 while IFS= read -r -d '' file; do
@@ -108,6 +108,6 @@ while IFS= read -r -d '' file; do
     echo "differs: $site/$path" >&2
     mismatch=1
   fi
-done < <(find . -type f ! -name .htaccess ! -path './about/*' ! -path './projects/*' -print0 | sort -z)
+done < <(find . -type f ! -name .htaccess -print0 | sort -z)
 if (( mismatch )); then fail "the live site differs from the build; run the script again (a cache, or an upload cut short)"; fi
 echo "verified: $site serves this build"

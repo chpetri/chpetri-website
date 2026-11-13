@@ -7,7 +7,6 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const dist = new URL("../dist/", import.meta.url);
 const pages = ["index.html", "cv/index.html", "contact/index.html", "work/index.html", "datenschutz/index.html", "404.html"];
-const redirects = { "about/index.html": "/cv/", "projects/index.html": "/work/" };
 
 async function page(path) {
   return readFile(new URL(path, dist), "utf8");
@@ -32,7 +31,7 @@ test("build contains every static route and the shipped assets", async () => {
   for (const path of pages) assert.equal((await stat(new URL(path, dist))).isFile(), true);
   assert.deepEqual(
     (await readdir(dist)).sort(),
-    [".htaccess", ".well-known", "404.html", "about", "assets", "contact", "cv", "datenschutz", "docs", "favicon.svg", "index.html", "og.png", "projects", "robots.txt", "sitemap.xml", "work"],
+    [".htaccess", ".well-known", "404.html", "apple-touch-icon.png", "assets", "contact", "cv", "datenschutz", "docs", "favicon.ico", "favicon.svg", "index.html", "og.png", "robots.txt", "sitemap.xml", "work"],
   );
   assert.deepEqual(await readdir(new URL(".well-known/", dist)), ["security.txt"]);
   assert.equal((await stat(new URL("docs/Christian_Petri_IHK_Projektarbeit_Sicherer_Fernzugriff.pdf", dist))).isFile(), true);
@@ -206,10 +205,11 @@ test("security.txt names the contact address and has not expired", async () => {
   const text = await readFile(new URL(".well-known/security.txt", dist), "utf8");
   const fields = Object.fromEntries([...text.matchAll(/^([\w-]+): (.+)$/gm)].map(([, name, value]) => [name, value]));
   assert.equal(fields.Contact, "mailto:contact@chpetri.com");
-  // the site answers on both names, so both are canonical
+  // www redirects to the bare domain, so there is one canonical address
   const canonical = [...text.matchAll(/^Canonical: (.+)$/gm)].map(([, url]) => url);
-  assert.deepEqual(canonical, ["https://chpetri.com/.well-known/security.txt", "https://www.chpetri.com/.well-known/security.txt"]);
+  assert.deepEqual(canonical, ["https://chpetri.com/.well-known/security.txt"]);
   const htaccess = await readFile(new URL(".htaccess", dist), "utf8");
+  assert.match(htaccess, /RewriteCond %\{HTTP_HOST\} \^www\\\.chpetri\\\.com\$ \[NC\]\s+RewriteCond [^\n]*acme-challenge[^\n]*\s+RewriteRule \^ https:\/\/chpetri\.com%\{REQUEST_URI\} \[R=301,L\]/);
   assert.match(htaccess, /^AddDefaultCharset utf-8$/m, "security.txt must be served as text/plain; charset=utf-8");
   assert.equal(fields["Preferred-Languages"], "de, en");
   // RFC 9116: at most a year ahead; when this fails, set a new date and deploy
@@ -231,19 +231,11 @@ test("every PDF links only to https addresses and to the site's own mailbox", as
   }
 });
 
-test("old routes redirect to their new homes without scripts", async () => {
-  for (const [path, target] of Object.entries(redirects)) {
-    const html = await page(path);
-    assert.match(html, /<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'">/);
-    assert.match(html, /<meta name="referrer" content="no-referrer">/);
-    assert.match(html, new RegExp(`<meta http-equiv="refresh" content="0; url=${target}">`));
-    assert.match(html, new RegExp(`<link rel="canonical" href="https://chpetri\\.com${target}">`));
-    assert.doesNotMatch(html, /<script/i);
-  }
+test("old routes and withdrawn documents redirect to their new homes", async () => {
   const htaccess = await readFile(new URL(".htaccess", dist), "utf8");
-  assert.match(htaccess, /Redirect 301 \/about\/ \/cv\//);
+  assert.match(htaccess, /RedirectMatch 301 \^\/about\/\?\$ \/cv\//);
+  assert.match(htaccess, /RedirectMatch 301 \^\/projects\/\?\$ \/work\//);
   assert.match(htaccess, /ErrorDocument 404 \/404\.html/);
-  assert.match(htaccess, /Redirect 301 \/projects\/ \/work\//);
   // withdrawn CV PDFs: old links land on the CV page
   for (const lang of ["DE", "EN"]) assert.match(htaccess, new RegExp(`Redirect 301 /docs/Christian_Petri_CV_${lang}\\.pdf /cv/`));
 });
