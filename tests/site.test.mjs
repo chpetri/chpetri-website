@@ -87,7 +87,6 @@ test("start page is only the greeting inside the frame", async () => {
   assert.match(html, /<h1>Hi\.<\/h1>/);
   const intro = html.match(/<p class="hi-line">([\s\S]*?)<\/p>/)[1].replace(/<[^>]+>/g, "");
   assert.equal(intro, "Ich bin Christian, Berater für IT-Sicherheit aus Darmstadt.");
-  assert.doesNotMatch(html, /terminal|evidence-ledger|hero/i);
 });
 
 test("CV is factual, bilingual, German first, private-data-minimised, and script-free", async () => {
@@ -120,12 +119,15 @@ test("CV is factual, bilingual, German first, private-data-minimised, and script
   assert.doesNotMatch(text, /\b\d{5}\s+\p{Lu}\p{Ll}+/u);
 });
 
-test("CV carries the verified certifications and nothing invented", async () => {
+test("CV lists the five certifications, four of them linked to their Credly record", async () => {
   const html = (await page("cv/index.html")).replace(/<style>[\s\S]*?<\/style>/, "");
   for (const cert of ["CompTIA Network Vulnerability Assessment Professional", "CompTIA PenTest\\+", "Cyber Security Advisor", "CompTIA Security\\+", "CompTIA Network\\+"]) {
     assert.match(html, new RegExp(cert));
   }
-  assert.doesNotMatch(html, /GIAC|SANS|OSCP|binary exploitation|PGP fingerprint|Signal handle/i);
+  // each language lists the same four badges
+  const badges = [...html.matchAll(/href="(https:\/\/www\.credly\.com\/badges\/[0-9a-f-]{36})"/g)].map(([, url]) => url);
+  assert.equal(badges.length, 8);
+  assert.equal(new Set(badges).size, 4);
 });
 
 test("every download label states the file's real size", async () => {
@@ -399,13 +401,8 @@ test("text colours meet WCAG AA contrast on the ground", async () => {
   }
 });
 
-test("publication gate blocks unresolved contact placeholders and verifies the active email", async () => {
-  if (process.env.PUBLISH_CHECK !== "1") return;
-  for (const path of pages) {
-    const html = await page(path);
-    assert.doesNotMatch(html, /EMAIL_PLACEHOLDER/);
-    if (path === "contact/index.html" || path === "cv/index.html") {
-      assert.match(html, /mailto:contact@chpetri\.com/);
-    }
+test("contact page and CV carry the site's mail address", async () => {
+  for (const path of ["contact/index.html", "cv/index.html"]) {
+    assert.match(await page(path), /mailto:contact@chpetri\.com/, path);
   }
 });

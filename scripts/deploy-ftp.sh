@@ -43,9 +43,11 @@ netrc="$HOME/.netrc"
 # without a matching entry lftp would log in anonymously, and then without TLS
 grep -qE "^[[:space:]]*machine[[:space:]]+${host//./\\.}([[:space:]]|$)" "$netrc" || fail "~/.netrc has no entry for $host"
 
-npm ci --no-audit --no-fund
+# --ignore-scripts: packages may not run their own code during the install, on the
+# machine that holds the FTP login
+npm ci --ignore-scripts --no-audit --no-fund
 npm audit --audit-level=high
-PUBLISH_CHECK=1 npm test
+npm test
 
 # Runs one mirror of dist/ onto the web root; the arguments are extra mirror options.
 # "open <host>" (not an ftp:// URL) is what makes lftp take the login from ~/.netrc.
