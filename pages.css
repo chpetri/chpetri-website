@@ -101,7 +101,7 @@ time { font-variant-numeric: lining-nums tabular-nums; }
 }
 
 .label,
-.case-meta,
+.project-meta,
 .profiles dt {
   font-family: var(--display);
   font-size: 0.875rem;
@@ -162,33 +162,48 @@ time { font-variant-numeric: lining-nums tabular-nums; }
 .button:hover,
 .button:focus-visible { background: #fff; color: var(--ground); }
 
-/* Projekte */
+/* Projekte: a list that can grow. Each project is a row built like a CV section: kind and
+   date in the label rail, then the title, a short text and its links. In the source the
+   title comes first, so on a narrow screen the label follows it instead of sitting above. */
 
-.case {
-  max-width: 880px;
-  padding-top: clamp(28px, 4vh, 40px);
+.project {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+  gap: 0 clamp(32px, 5vw, 80px);
+  padding-block: clamp(32px, 5vh, 48px) clamp(44px, 8vh, 80px);
   border-top: 1px solid var(--rule);
 }
 
-.case h2 {
-  max-width: 15ch;
-  font-size: clamp(48px, 7vw, 104px);
+.project:first-of-type { padding-top: 0; border-top: 0; }
+.project:last-of-type { padding-bottom: 0; }
+
+.project > * { grid-column: 2; }
+
+.project h2 {
+  max-width: 18ch;
+  font-size: clamp(40px, 4.6vw, 68px);
+  line-height: 0.94;
 }
 
-.case-meta {
-  margin: 20px 0 32px;
+.project-meta {
+  grid-area: 1 / 1;
+  margin-top: 0.7em;
   color: var(--ink-3);
 }
 
-.case-actions {
+.project-meta time { display: block; color: var(--ink-2); }
+
+.project .prose { margin-top: 22px; }
+
+.project-links {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 16px 28px;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
-.case-actions > a:not(.button) {
+.project-links > a:not(.button) {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -274,6 +289,12 @@ time { font-variant-numeric: lining-nums tabular-nums; }
   .profiles { font-size: 1.0625rem; }
   .profiles { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .profiles dd + dt { margin-top: 14px; }
+  .project { grid-template-columns: minmax(0, 1fr); }
+  .project > *,
+  .project-meta { grid-area: auto; }
+  .project-meta { margin-top: 14px; }
+  .project-meta time { display: inline; }
+  .project-meta time::before { content: "· "; color: var(--ink-3); }
   .button { flex-direction: column; align-items: flex-start; gap: 4px; }
   .button small { white-space: normal; }
 }

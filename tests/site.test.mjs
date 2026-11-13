@@ -130,12 +130,17 @@ test("CV lists the five certifications, four of them linked to their Credly reco
   assert.equal(new Set(badges).size, 4);
 });
 
-test("every download label states the file's real size", async () => {
+test("every document button states the file's real length and size", async () => {
   for (const path of ["work/index.html"]) {
     const html = await page(path);
-    for (const [, href, kilobytes] of html.matchAll(/<a class="button" href="\.\.\/(docs\/[^"]+\.pdf)"[^>]*>[^<]*<small>PDF, (\d+) KB,/g)) {
-      const bytes = (await stat(new URL(href, dist))).size;
-      assert.equal(Number(kilobytes), Math.round(bytes / 1000), `${path}: ${href} is ${bytes} bytes`);
+    const buttons = [...html.matchAll(/<a class="button" href="\.\.\/(docs\/[^"]+\.pdf)">[^<]*<small>PDF, (\d+) Seiten, (\d+) KB<\/small>/g)];
+    assert.ok(buttons.length > 0, `${path}: no document button found`);
+    for (const [, href, pages, kilobytes] of buttons) {
+      const pdf = await readFile(new URL(href, dist));
+      assert.equal(Number(kilobytes), Math.round(pdf.byteLength / 1000), `${path}: ${href} is ${pdf.byteLength} bytes`);
+      // the page tree's root carries the total; nested nodes only count fewer
+      const counts = [...pdf.toString("latin1").matchAll(/\/Count (\d+)/g)].map(([, count]) => Number(count));
+      assert.equal(Number(pages), Math.max(...counts), `${path}: ${href} page count`);
     }
   }
 });
@@ -166,12 +171,22 @@ test("the 404 page names the problem in its heading", async () => {
   assert.match(html, /<h1 class="display">Hm\.<span class="visually-hidden"> Seite nicht gefunden<\/span><\/h1>/);
 });
 
-test("Projekte documents the IHK case study with a resolvable PDF", async () => {
+test("Projekte lists each project with title, kind, text and links", async () => {
   const html = await page("work/index.html");
+  const projects = [...html.matchAll(/<article class="project" aria-labelledby="([\w-]+)">([\s\S]*?)<\/article>/g)];
+  assert.ok(projects.length >= 2);
+  for (const [, id, body] of projects) {
+    // the title comes first in the source: on a phone the label follows it, never precedes it
+    assert.match(body, new RegExp(`^\\s*<h2 id="${id}" class="display">[^<]+</h2>\\s*<p class="project-meta">`), id);
+    assert.match(body, /<div class="prose">/, id);
+    assert.match(body, /<p class="project-links">/, id);
+  }
   assert.match(html, /Sicherer administrativer Fernzugriff/);
   assert.match(html, /IHK-Fallstudie/);
-  assert.match(html, /href="\.\.\/docs\/Christian_Petri_IHK_Projektarbeit_Sicherer_Fernzugriff\.pdf" download=/);
-  assert.doesNotMatch(html.replace(/<style>[\s\S]*?<\/style>/, ""), /Magic Numbers|SOC analyst|penetration test project|a few projects|ein paar Projekte/i);
+  // the case study opens in the browser's own viewer; nothing is forced into Downloads
+  assert.match(html, /href="\.\.\/docs\/Christian_Petri_IHK_Projektarbeit_Sicherer_Fernzugriff\.pdf">/);
+  assert.doesNotMatch(html, /\sdownload[=\s>]/);
+  assert.match(html, /href="https:\/\/github\.com\/chpetri\/chpetri-website"/);
 });
 
 test("robots.txt points at a sitemap that lists exactly the canonical pages", async () => {
