@@ -212,6 +212,8 @@ test("the Apache host sends the security headers and serves no hidden files", as
   assert.equal(headers["Cross-Origin-Opener-Policy"], "same-origin");
   assert.equal(headers["Cross-Origin-Resource-Policy"], "same-origin");
   assert.match(htaccess, /^Options -Indexes$/m);
+  // refused paths answer with the site's own page, not Apache's
+  assert.match(htaccess, /^ErrorDocument 403 \/404\.html$/m);
   assert.match(htaccess, /<FilesMatch "\^\\\.">\s*Require all denied/);
   assert.match(htaccess, /<FilesMatch "\(\?i\)\(\\\.\(bak\|[^"]*\benv\b[^"]*">\s*Require all denied/);
 });

@@ -60,6 +60,9 @@ AddDefaultCharset utf-8
 
 Options -Indexes
 ErrorDocument 404 /404.html
+# Refused paths (dotfiles, backups, directory listings) get the same page instead of
+# Apache's own, which names the server software.
+ErrorDocument 403 /404.html
 
 # Dotfiles are never content. (.well-known is a directory, not a file, and stays reachable.)
 <FilesMatch "^\.">
