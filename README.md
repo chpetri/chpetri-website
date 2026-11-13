@@ -1,6 +1,6 @@
 # chpetri.com
 
-Quellcode meiner persönlichen Website: [chpetri.com](https://chpetri.com). Die Seite enthält meinen Lebenslauf, ein Projekt und Kontaktmöglichkeiten.
+Quellcode meiner persönlichen Website: [chpetri.com](https://chpetri.com). Die Seite enthält meinen Lebenslauf, meine Projekte und Kontaktmöglichkeiten.
 
 Die Website besteht aus HTML und CSS. Vite erstellt die fertigen Dateien; im Browser wird kein JavaScript benötigt. Schriften und Grafiken liegen auf dem eigenen Server.
 
