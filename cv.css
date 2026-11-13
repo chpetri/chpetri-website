@@ -1,4 +1,4 @@
-/* The CV: the document that is the product. German first, English by a CSS-only switch, printable. */
+/* The CV: the document that is the product. German first, English at /cv/#en, printable. */
 
 @import "./pages.css";
 
@@ -13,12 +13,11 @@
 .cv-date,
 .cv-lines time,
 .cv-skills dt,
-.cv-contact p > span,
 .cv-role,
 .cv-entry h4 small,
-.lang-controls {
+.lang {
   font-family: var(--display);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1.5;
   letter-spacing: 0.14em;
@@ -26,80 +25,68 @@
   font-variant-numeric: lining-nums tabular-nums;
 }
 
-/* The language switch is its own small group; the CV panels follow it, outside the fieldset. */
+/* Two versions of one document. /cv/#en shows the English CV, every other address the
+   German one, so each has an address that can be passed on. The link target is an empty
+   anchor before both versions, fixed to the top of the window so following it never scrolls. */
+.lang-anchor { position: fixed; top: 0; }
+
+.cv-en,
+#en:target ~ .cv-de { display: none; }
+#en:target ~ .cv-en { display: block; }
+
+/* Each version carries the switch in its head and marks itself as the current one. */
 .lang {
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.lang-choice {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  opacity: 0;
-}
-
-.lang-controls {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: 4px;
-  margin: 0 0 clamp(32px, 5vh, 48px) -12px;
+  margin: 0 0 clamp(8px, 2vh, 20px) -12px;
 }
 
-.lang-controls label {
+.lang a {
   display: inline-flex;
   align-items: center;
   gap: 0.6em;
   min-height: 44px;
   padding: 0 14px 0 12px;
   color: var(--ink-2);
-  cursor: pointer;
-  transition: color 0.3s var(--ease-out);
+  text-underline-offset: 0.45em;
 }
 
-.lang-controls label::before {
+.lang a:hover { color: var(--ink); }
+.lang a:focus-visible { outline-offset: 2px; }
+
+.lang a[aria-current] {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.lang a[aria-current]::before {
   content: "";
   width: 0.45em;
   height: 0.45em;
   background: currentColor;
-  opacity: 0;
-  transform: scale(0.4);
-  transition: opacity 0.3s var(--ease-out), transform 0.5s var(--ease-out);
 }
 
-.lang-controls label:hover { color: var(--ink); }
-
-#lang-en:checked ~ .lang-controls label[for="lang-en"],
-#lang-de:checked ~ .lang-controls label[for="lang-de"] { color: var(--ink); }
-
-#lang-en:checked ~ .lang-controls label[for="lang-en"]::before,
-#lang-de:checked ~ .lang-controls label[for="lang-de"]::before { opacity: 1; transform: none; }
-
-#lang-en:focus-visible ~ .lang-controls label[for="lang-en"],
-#lang-de:focus-visible ~ .lang-controls label[for="lang-de"] {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
-}
-
-/* Without :has() both panels stay visible, German first: complete, only longer. */
-.cv-page:has(#lang-en:checked) .cv-de,
-.cv-page:has(#lang-de:checked) .cv-en { display: none; }
-
-.cv-head {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 20px 40px;
-  padding-bottom: 32px;
-}
+.cv-head { padding-bottom: 32px; }
 
 .cv-head h2 { font-size: clamp(60px, 8vw, 116px); }
 .cv-head .cv-role { margin-top: 14px; color: var(--ink-2); }
+
+/* Where there is room the switch stands at the right end of the role line. The name keeps
+   a row to itself: its width changes when the web font replaces the fallback, and nothing
+   else in the head may move with it. */
+@media (min-width: 47.5em) {
+  .cv-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    column-gap: 40px;
+  }
+
+  .cv-head > div { display: contents; }
+  .cv-head h2 { grid-column: 1 / -1; }
+  .lang { grid-area: 2 / 2; margin: 0 -14px -13px 0; }
+}
 
 .cv-section {
   display: grid;
@@ -109,7 +96,8 @@
   border-top: 1px solid var(--rule);
 }
 
-/* The screen has a persistent contact link; a standalone printed CV needs its own details. */
+/* The screen has a persistent contact link; a standalone printed CV needs its own details.
+   They stand in the head, beside the name, so the last sheet never holds them alone. */
 .cv-print-contact { display: none; }
 
 .cv-section > h3 {
@@ -133,8 +121,7 @@
 .cv-profile p { max-width: 62ch; }
 
 .cv-lines p,
-.cv-skills > div,
-.cv-contact p {
+.cv-skills > div {
   display: grid;
   grid-template-columns: var(--date-col) minmax(0, 1fr);
   gap: 24px;
@@ -143,21 +130,17 @@
 }
 
 .cv-lines p:first-child,
-.cv-skills > div:first-child,
-.cv-contact p:first-child { padding-top: 0; border-top: 0; }
+.cv-skills > div:first-child { padding-top: 0; border-top: 0; }
 
-.cv-skills dt,
-.cv-contact p > span { color: var(--ink-3); padding-top: 2px; }
+.cv-skills dt { color: var(--ink-3); padding-top: 2px; }
 
 .cv-lines time,
-.cv-date { color: var(--ink-2); font-size: 0.9375rem; }
+.cv-date { color: var(--ink-2); font-size: 1rem; }
 
 .cv-lines time { padding-top: 2px; }
 
 .cv-skills { margin: 0; }
 .cv-skills dd { margin: 0; }
-.cv-contact { margin: 0; font-style: normal; }
-.cv-contact a { display: inline-flex; align-items: center; min-height: 32px; overflow-wrap: anywhere; }
 
 .cv-entry {
   display: grid;
@@ -213,7 +196,6 @@
 
   .cv-lines p,
   .cv-skills > div,
-  .cv-contact p,
   .cv-entry { grid-template-columns: minmax(0, 1fr); gap: 4px; }
 
   .cv-entry { padding-bottom: 22px; }
@@ -222,7 +204,7 @@
 
 /* Windows contrast themes replace backgrounds, which would erase the square markers */
 @media (forced-colors: active) {
-  .lang-controls label::before,
+  .lang a[aria-current]::before,
   .cv-entry li::before {
     forced-color-adjust: none;
     background: CanvasText;
@@ -230,14 +212,16 @@
 }
 
 @media print {
-  .lang-controls { display: none !important; }
+  .lang { display: none !important; }
 
   .page { width: auto; padding: 0; }
-  .cv-head { padding: 0 0 6mm; }
+  .cv-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 8mm; padding: 0 0 5mm; }
   .cv-head h2 { font-size: 30pt; }
   .cv-head .cv-role { font-size: 8.5pt; }
-  .cv-section { grid-template-columns: 30mm minmax(0, 1fr); gap: 5mm; padding: 4mm 0; break-inside: auto; }
-  .cv-print-contact { display: grid; }
+  /* spacing is set so that the German version, the longer one, ends on the second sheet */
+  .cv-section { grid-template-columns: 30mm minmax(0, 1fr); gap: 5mm; padding: 3.4mm 0; break-inside: auto; }
+  .cv-print-contact { display: block; font-size: 9pt; font-style: normal; line-height: 1.45; text-align: right; }
+  .cv-print-contact a { display: block; }
   .cv-section > h3 { position: static; font-size: 8.5pt; }
   .cv-body { max-width: none; font-size: 10pt; line-height: 1.45; }
   .cv-profile { font-size: 11pt; }
@@ -247,14 +231,11 @@
      bring back the date column beside each entry */
   .cv-lines p,
   .cv-skills > div,
-  .cv-contact p,
   .cv-entry { grid-template-columns: 27mm minmax(0, 1fr); gap: 4mm; }
   .cv-lines p,
-  .cv-skills > div,
-  .cv-contact p { padding-block: 2mm; }
+  .cv-skills > div { padding-block: 1.7mm; }
   .cv-lines p:first-child,
-  .cv-skills > div:first-child,
-  .cv-contact p:first-child { padding-top: 0; }
+  .cv-skills > div:first-child { padding-top: 0; }
 
   /* PDF text extraction (and applicant tracking systems) splits widely tracked
      capitals into single letters: keep the labels nearly untracked on paper */
@@ -262,7 +243,6 @@
   .cv-date,
   .cv-lines time,
   .cv-skills dt,
-  .cv-contact p > span,
   .cv-role,
   .cv-entry h4 small { letter-spacing: 0.03em; }
 
@@ -272,15 +252,13 @@
 
   .cv-entry,
   .cv-lines p,
-  .cv-skills > div,
-  .cv-contact p { break-inside: avoid; }
-  .cv-entry { padding-bottom: 4mm; }
-  .cv-entry + .cv-entry { padding-top: 4mm; }
+  .cv-skills > div { break-inside: avoid; }
+  .cv-entry { padding-bottom: 3.4mm; }
+  .cv-entry + .cv-entry { padding-top: 3.4mm; }
   .cv-entry h4 { font-size: 11pt; }
   .cv-entry h4 small { font-size: 8pt; margin-top: 1mm; }
   .cv-place { font-size: 9.5pt; margin: 1mm 0 2mm; }
   .cv-date,
   .cv-lines time,
-  .cv-skills dt,
-  .cv-contact p > span { font-size: 8.5pt; }
+  .cv-skills dt { font-size: 8.5pt; }
 }

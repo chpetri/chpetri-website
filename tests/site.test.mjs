@@ -92,9 +92,14 @@ test("start page is only the greeting inside the frame", async () => {
 
 test("CV is factual, bilingual, German first, private-data-minimised, and script-free", async () => {
   const html = await page("cv/index.html");
-  assert.match(html, /id="lang-de" checked/);
-  // the language switch is a small group of its own; the CV panels follow it, German first
-  assert.match(html, /<\/fieldset>\s*<div class="lang-panels">\s*<article class="cv cv-de"/);
+  // two versions of one document: /cv/#en is the English CV, German the default. The anchor
+  // comes before both versions as their sibling (the CSS relies on that order).
+  assert.match(html, /<span id="en" class="lang-anchor"><\/span>\s*<article class="cv cv-de" lang="de"[^>]*>[\s\S]*<\/article>\s*<article class="cv cv-en" lang="en"/);
+  assert.match(html, /#en:target~\.cv-en\{display:block\}/);
+  // each version carries the switch in its head and marks itself as current
+  const switches = [...html.matchAll(/<nav class="lang" aria-label="[^"]+">\s*<a href="#de" lang="de"( aria-current="true")?>Deutsch<\/a>\s*<a href="#en" lang="en"( aria-current="true")?>English<\/a>\s*<\/nav>/g)];
+  assert.deepEqual(switches.map(([, de, en]) => [Boolean(de), Boolean(en)]), [[true, false], [false, true]]);
+  assert.doesNotMatch(html, /<input\b/);
   // sections stay unnamed, otherwise every one becomes a landmark region
   assert.doesNotMatch(html, /<section class="cv-section" aria-labelledby/);
   // the CV is read on the page; the PDF version is sent with applications only
@@ -144,6 +149,14 @@ test("the privacy policy names the controller, the host and what is not done, an
   // the page itself must keep its promise: no cookies, scripts or third-party requests
   assert.doesNotMatch(html, /<script|<iframe|<img\b/i);
   assert.match(await page("contact/index.html"), /<a href="\.\.\/datenschutz\/">Datenschutz<\/a>/);
+});
+
+test("a printed CV carries the contact details in its head, not on a sheet of their own", async () => {
+  const html = await page("cv/index.html");
+  const heads = [...html.matchAll(/<header class="cv-head">([\s\S]*?)<\/header>/g)];
+  assert.equal(heads.length, 2);
+  for (const [, head] of heads) assert.match(head, /<address class="cv-print-contact">\s*<a href="mailto:contact@chpetri\.com">/);
+  assert.doesNotMatch(html, /<section class="cv-section cv-print-contact">/);
 });
 
 test("the 404 page names the problem in its heading", async () => {
