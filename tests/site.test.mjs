@@ -391,10 +391,15 @@ test("source has zero runtime dependencies and includes print, reduced-motion, a
   assert.match(cv, /@media print/);
   assert.match(base, /prefers-reduced-motion: reduce/);
   assert.match(pages, /forced-colors: active/);
-  // keyboard focus must stop clear of both pinned bars (WCAG 2.4.11), and the bars
-  // only pin where the screen is tall enough to spare them
-  assert.match(base, /scroll-padding-block: calc\(var\(--pinned\) \+ 16px\)/);
-  assert.match(base, /@media \(min-width: 47\.5em\) and \(min-height: 720px\) \{\s*:root \{ --pinned: var\(--bar\); \}/);
+  // the sub-pages keep their navigation in reach: the bottom bar is pinned on every layout,
+  // the top bar where the window is wide, neither in a very low window; keyboard focus
+  // stops clear of whatever is pinned (WCAG 2.4.11)
+  assert.match(pages, /scroll-padding-block: calc\(var\(--pinned\) \+ 16px\) calc\(var\(--pinned-bottom\) \+ 16px\)/);
+  assert.match(pages, /@media \(min-height: 480px\) \{\s*:root \{ --pinned-bottom: var\(--bar\); \}\s*\.corners-bottom \{ position: sticky; bottom: 0;/);
+  assert.match(pages, /@media \(min-width: 47\.5em\) and \(min-height: 480px\) \{\s*:root \{ --pinned: var\(--bar\); \}\s*\.corners-top \{ position: sticky; top: 0;/);
+  // a short laptop window gets slimmer bars; the start page never scrolls and pins nothing
+  assert.match(base, /@media \(min-width: 47\.5em\) and \(max-height: 719px\) \{\s*:root \{ --bar: 48px; \}/);
+  assert.doesNotMatch(base, /position: sticky|scroll-padding/);
   // width breakpoints follow the reader's default font size, and no word can widen the page
   for (const css of [base, home, pages, cv]) assert.doesNotMatch(css, /@media[^{]*width: \d+px/);
   assert.match(base, /body \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*overflow-wrap: break-word;/);

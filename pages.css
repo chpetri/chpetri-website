@@ -25,6 +25,32 @@
 :root {
   --serif: "Baskervville", "Baskerville", "Libre Baskerville", Georgia, serif;
   --display: "Saira Extra Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  /* height a pinned bar covers at the top and at the bottom edge (0 while that bar scrolls) */
+  --pinned: 0px;
+  --pinned-bottom: 0px;
+}
+
+/* keyboard focus and anchors stop clear of the pinned bars (WCAG 2.4.11) */
+html { scroll-padding-block: calc(var(--pinned) + 16px) calc(var(--pinned-bottom) + 16px); }
+
+/* These pages scroll, so the way on stays in reach. The bottom bar (Projekte, Kontakt) is
+   pinned on every layout, on a phone right under the thumb. The top bar is pinned as well
+   where the window is wide; on a phone it scrolls away and leaves the room to the text.
+   In a very low window, a phone held sideways, nothing is pinned. The start page fits its
+   window and needs none of this. */
+@media (min-height: 480px) {
+  :root { --pinned-bottom: var(--bar); }
+  .corners-bottom { position: sticky; bottom: 0; z-index: 10; }
+}
+
+@media (min-width: 47.5em) and (min-height: 480px) {
+  :root { --pinned: var(--bar); }
+  .corners-top { position: sticky; top: 0; z-index: 10; }
+}
+
+/* pinned alone at the foot of a phone, the bar gets a hairline, so scrolling text ends at an edge */
+@media (max-width: 47.4375em) and (min-height: 480px) {
+  .corners-bottom { border-top: 1px solid var(--rule-soft); }
 }
 
 ul, ol { margin: 0; padding: 0; }

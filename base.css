@@ -1,7 +1,7 @@
 /* chpetri.com, shared frame. Anlassblau: one tempered-steel blue ground, pale "blank" steel ink.
    Every page links this file; the build inlines it with the page's own stylesheet.
    Only what the start page uses belongs here: every byte counts against its first round trip.
-   What only the sub-pages use goes into pages.css. */
+   What only the sub-pages use goes into pages.css, such as pinning the bars while a page scrolls. */
 
 :root {
   color-scheme: dark;
@@ -14,8 +14,6 @@
   --rule-soft: rgba(232, 236, 244, 0.13);
   --edge: clamp(16px, 2vw, 30px);
   --bar: 72px;
-  /* height a pinned corner bar covers at the top and the bottom edge (0 when the bars scroll) */
-  --pinned: 0px;
   --measure: 66ch;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -33,8 +31,6 @@ html {
   -webkit-text-size-adjust: 100%;
   scrollbar-color: var(--ink-3) var(--ground);
   scroll-behavior: smooth;
-  /* keyboard focus and anchors stop clear of both pinned bars (WCAG 2.4.11) */
-  scroll-padding-block: calc(var(--pinned) + 16px);
 }
 
 body {
@@ -146,15 +142,11 @@ h1, h2, h3, h4 { margin: 0; font-weight: 400; line-height: 1.15; text-wrap: bala
 .corners-top { view-transition-name: corners-top; }
 .corners-bottom { view-transition-name: corners-bottom; }
 
-/* The corners stay pinned while the middle scrolls, but only where the screen is
-   tall enough to spare them: on a laptop at 650px or a phone held sideways they
-   would cover a third of the page, so there they scroll with it.
-   Width breakpoints are in em, so a larger default font size brings the narrow layout
-   in earlier (47.5em is 760px at 16px); the height limit stays in px like the bars. */
-@media (min-width: 47.5em) and (min-height: 720px) {
-  :root { --pinned: var(--bar); }
-  .corners-top { position: sticky; top: 0; z-index: 10; }
-  .corners-bottom { position: sticky; bottom: 0; z-index: 10; }
+/* Width breakpoints are in em, so a larger default font size brings the narrow layout
+   in earlier (47.5em is 760px at 16px); height limits stay in px like the bars.
+   A short window, such as a 1366 × 768 laptop with about 650px left, gets slimmer bars. */
+@media (min-width: 47.5em) and (max-height: 719px) {
+  :root { --bar: 48px; }
 }
 
 @media (max-width: 47.4375em) {
