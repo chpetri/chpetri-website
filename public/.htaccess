@@ -1,3 +1,13 @@
+# One address for the site: www.chpetri.com redirects to chpetri.com, so there is no
+# second copy of every page. The certificate challenge path is left alone. Wrapped in
+# IfModule on purpose: without mod_rewrite both names keep working as before.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^www\.chpetri\.com$ [NC]
+    RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/
+    RewriteRule ^ https://chpetri.com%{REQUEST_URI} [R=301,L]
+</IfModule>
+
 # Security headers. Deliberately not wrapped in <IfModule mod_headers.c>: if the module
 # were ever missing, the site should fail loudly (500) instead of silently losing them.
 # No includeSubDomains: autoconfig.chpetri.com (mail client setup at Hetzner) has no
@@ -18,9 +28,11 @@ Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
 Header always set Cross-Origin-Opener-Policy "same-origin"
 Header always set Cross-Origin-Resource-Policy "same-origin"
 
-# Link previews and search results show these two on other sites.
-<FilesMatch "^(og\.png|favicon\.svg)$">
+# Link previews, search results and home screens show these on other sites and devices.
+# They change rarely: a week in the cache.
+<FilesMatch "^(og\.png|favicon\.svg|favicon\.ico|apple-touch-icon\.png)$">
     Header always set Cross-Origin-Resource-Policy "cross-origin"
+    Header set Cache-Control "public, max-age=604800"
 </FilesMatch>
 
 
@@ -48,6 +60,9 @@ AddDefaultCharset utf-8
 
 Options -Indexes
 ErrorDocument 404 /404.html
+# Refused paths (dotfiles, backups, directory listings) get the same page instead of
+# Apache's own, which names the server software.
+ErrorDocument 403 /404.html
 
 # Dotfiles are never content. (.well-known is a directory, not a file, and stays reachable.)
 <FilesMatch "^\.">
@@ -60,8 +75,8 @@ ErrorDocument 404 /404.html
 </FilesMatch>
 
 # Old routes (the CV link is in circulation on application documents)
-Redirect 301 /about/ /cv/
-Redirect 301 /projects/ /work/
+RedirectMatch 301 ^/about/?$ /cv/
+RedirectMatch 301 ^/projects/?$ /work/
 # The CV PDFs were withdrawn (2026-11): the CV is read on the page; the PDF comes with an application.
 Redirect 301 /docs/Christian_Petri_CV_DE.pdf /cv/
 Redirect 301 /docs/Christian_Petri_CV_EN.pdf /cv/

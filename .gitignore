@@ -32,5 +32,7 @@ ehthumbs.db
 .vscode/
 .idea/
 
-# Local design review files
+# Local design review files and working notes
 .impeccable/
+/PRODUCT.md
+/DESIGN.md

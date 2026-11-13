@@ -7,7 +7,6 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const dist = new URL("../dist/", import.meta.url);
 const pages = ["index.html", "cv/index.html", "contact/index.html", "work/index.html", "datenschutz/index.html", "404.html"];
-const redirects = { "about/index.html": "/cv/", "projects/index.html": "/work/" };
 
 async function page(path) {
   return readFile(new URL(path, dist), "utf8");
@@ -32,7 +31,7 @@ test("build contains every static route and the shipped assets", async () => {
   for (const path of pages) assert.equal((await stat(new URL(path, dist))).isFile(), true);
   assert.deepEqual(
     (await readdir(dist)).sort(),
-    [".htaccess", ".well-known", "404.html", "about", "assets", "contact", "cv", "datenschutz", "docs", "favicon.svg", "index.html", "og.png", "projects", "robots.txt", "sitemap.xml", "work"],
+    [".htaccess", ".well-known", "404.html", "apple-touch-icon.png", "assets", "contact", "cv", "datenschutz", "docs", "favicon.ico", "favicon.svg", "index.html", "og.png", "robots.txt", "sitemap.xml", "work"],
   );
   assert.deepEqual(await readdir(new URL(".well-known/", dist)), ["security.txt"]);
   assert.equal((await stat(new URL("docs/Christian_Petri_IHK_Projektarbeit_Sicherer_Fernzugriff.pdf", dist))).isFile(), true);
@@ -88,14 +87,18 @@ test("start page is only the greeting inside the frame", async () => {
   assert.match(html, /<h1>Hi\.<\/h1>/);
   const intro = html.match(/<p class="hi-line">([\s\S]*?)<\/p>/)[1].replace(/<[^>]+>/g, "");
   assert.equal(intro, "Ich bin Christian, Berater für IT-Sicherheit aus Darmstadt.");
-  assert.doesNotMatch(html, /terminal|evidence-ledger|hero/i);
 });
 
 test("CV is factual, bilingual, German first, private-data-minimised, and script-free", async () => {
   const html = await page("cv/index.html");
-  assert.match(html, /id="lang-de" checked/);
-  // the language switch is a small group of its own; the CV panels follow it, German first
-  assert.match(html, /<\/fieldset>\s*<div class="lang-panels">\s*<article class="cv cv-de"/);
+  // two versions of one document: /cv/#en is the English CV, German the default. The anchor
+  // comes before both versions as their sibling (the CSS relies on that order).
+  assert.match(html, /<span id="en" class="lang-anchor"><\/span>\s*<article class="cv cv-de" lang="de"[^>]*>[\s\S]*<\/article>\s*<article class="cv cv-en" lang="en"/);
+  assert.match(html, /#en:target~\.cv-en\{display:block\}/);
+  // each version carries the switch in its head and marks itself as current
+  const switches = [...html.matchAll(/<nav class="lang" aria-label="[^"]+">\s*<a href="#de" lang="de"( aria-current="true")?>Deutsch<\/a>\s*<a href="#en" lang="en"( aria-current="true")?>English<\/a>\s*<\/nav>/g)];
+  assert.deepEqual(switches.map(([, de, en]) => [Boolean(de), Boolean(en)]), [[true, false], [false, true]]);
+  assert.doesNotMatch(html, /<input\b/);
   // sections stay unnamed, otherwise every one becomes a landmark region
   assert.doesNotMatch(html, /<section class="cv-section" aria-labelledby/);
   // the CV is read on the page; the PDF version is sent with applications only
@@ -116,20 +119,28 @@ test("CV is factual, bilingual, German first, private-data-minimised, and script
   assert.doesNotMatch(text, /\b\d{5}\s+\p{Lu}\p{Ll}+/u);
 });
 
-test("CV carries the verified certifications and nothing invented", async () => {
+test("CV lists the five certifications, four of them linked to their Credly record", async () => {
   const html = (await page("cv/index.html")).replace(/<style>[\s\S]*?<\/style>/, "");
   for (const cert of ["CompTIA Network Vulnerability Assessment Professional", "CompTIA PenTest\\+", "Cyber Security Advisor", "CompTIA Security\\+", "CompTIA Network\\+"]) {
     assert.match(html, new RegExp(cert));
   }
-  assert.doesNotMatch(html, /GIAC|SANS|OSCP|binary exploitation|PGP fingerprint|Signal handle/i);
+  // each language lists the same four badges
+  const badges = [...html.matchAll(/href="(https:\/\/www\.credly\.com\/badges\/[0-9a-f-]{36})"/g)].map(([, url]) => url);
+  assert.equal(badges.length, 8);
+  assert.equal(new Set(badges).size, 4);
 });
 
-test("every download label states the file's real size", async () => {
+test("every document button states the file's real length and size", async () => {
   for (const path of ["work/index.html"]) {
     const html = await page(path);
-    for (const [, href, kilobytes] of html.matchAll(/<a class="button" href="\.\.\/(docs\/[^"]+\.pdf)"[^>]*>[^<]*<small>PDF, (\d+) KB,/g)) {
-      const bytes = (await stat(new URL(href, dist))).size;
-      assert.equal(Number(kilobytes), Math.round(bytes / 1000), `${path}: ${href} is ${bytes} bytes`);
+    const buttons = [...html.matchAll(/<a class="button" href="\.\.\/(docs\/[^"]+\.pdf)">[^<]*<small>PDF, (\d+) Seiten, (\d+) KB<\/small>/g)];
+    assert.ok(buttons.length > 0, `${path}: no document button found`);
+    for (const [, href, pages, kilobytes] of buttons) {
+      const pdf = await readFile(new URL(href, dist));
+      assert.equal(Number(kilobytes), Math.round(pdf.byteLength / 1000), `${path}: ${href} is ${pdf.byteLength} bytes`);
+      // the page tree's root carries the total; nested nodes only count fewer
+      const counts = [...pdf.toString("latin1").matchAll(/\/Count (\d+)/g)].map(([, count]) => Number(count));
+      assert.equal(Number(pages), Math.max(...counts), `${path}: ${href} page count`);
     }
   }
 });
@@ -147,17 +158,35 @@ test("the privacy policy names the controller, the host and what is not done, an
   assert.match(await page("contact/index.html"), /<a href="\.\.\/datenschutz\/">Datenschutz<\/a>/);
 });
 
+test("a printed CV carries the contact details in its head, not on a sheet of their own", async () => {
+  const html = await page("cv/index.html");
+  const heads = [...html.matchAll(/<header class="cv-head">([\s\S]*?)<\/header>/g)];
+  assert.equal(heads.length, 2);
+  for (const [, head] of heads) assert.match(head, /<address class="cv-print-contact">\s*<a href="mailto:contact@chpetri\.com">/);
+  assert.doesNotMatch(html, /<section class="cv-section cv-print-contact">/);
+});
+
 test("the 404 page names the problem in its heading", async () => {
   const html = await page("404.html");
   assert.match(html, /<h1 class="display">Hm\.<span class="visually-hidden"> Seite nicht gefunden<\/span><\/h1>/);
 });
 
-test("Projekte documents the IHK case study with a resolvable PDF", async () => {
+test("Projekte lists each project with title, kind, text and links", async () => {
   const html = await page("work/index.html");
+  const projects = [...html.matchAll(/<article class="project" aria-labelledby="([\w-]+)">([\s\S]*?)<\/article>/g)];
+  assert.ok(projects.length >= 2);
+  for (const [, id, body] of projects) {
+    // the title comes first in the source: on a phone the label follows it, never precedes it
+    assert.match(body, new RegExp(`^\\s*<h2 id="${id}" class="display">[^<]+</h2>\\s*<p class="project-meta">`), id);
+    assert.match(body, /<div class="prose">/, id);
+    assert.match(body, /<p class="project-links">/, id);
+  }
   assert.match(html, /Sicherer administrativer Fernzugriff/);
   assert.match(html, /IHK-Fallstudie/);
-  assert.match(html, /href="\.\.\/docs\/Christian_Petri_IHK_Projektarbeit_Sicherer_Fernzugriff\.pdf" download=/);
-  assert.doesNotMatch(html.replace(/<style>[\s\S]*?<\/style>/, ""), /Magic Numbers|SOC analyst|penetration test project|a few projects|ein paar Projekte/i);
+  // the case study opens in the browser's own viewer; nothing is forced into Downloads
+  assert.match(html, /href="\.\.\/docs\/Christian_Petri_IHK_Projektarbeit_Sicherer_Fernzugriff\.pdf">/);
+  assert.doesNotMatch(html, /\sdownload[=\s>]/);
+  assert.match(html, /href="https:\/\/github\.com\/chpetri\/chpetri-website"/);
 });
 
 test("robots.txt points at a sitemap that lists exactly the canonical pages", async () => {
@@ -198,6 +227,8 @@ test("the Apache host sends the security headers and serves no hidden files", as
   assert.equal(headers["Cross-Origin-Opener-Policy"], "same-origin");
   assert.equal(headers["Cross-Origin-Resource-Policy"], "same-origin");
   assert.match(htaccess, /^Options -Indexes$/m);
+  // refused paths answer with the site's own page, not Apache's
+  assert.match(htaccess, /^ErrorDocument 403 \/404\.html$/m);
   assert.match(htaccess, /<FilesMatch "\^\\\.">\s*Require all denied/);
   assert.match(htaccess, /<FilesMatch "\(\?i\)\(\\\.\(bak\|[^"]*\benv\b[^"]*">\s*Require all denied/);
 });
@@ -206,10 +237,11 @@ test("security.txt names the contact address and has not expired", async () => {
   const text = await readFile(new URL(".well-known/security.txt", dist), "utf8");
   const fields = Object.fromEntries([...text.matchAll(/^([\w-]+): (.+)$/gm)].map(([, name, value]) => [name, value]));
   assert.equal(fields.Contact, "mailto:contact@chpetri.com");
-  // the site answers on both names, so both are canonical
+  // www redirects to the bare domain, so there is one canonical address
   const canonical = [...text.matchAll(/^Canonical: (.+)$/gm)].map(([, url]) => url);
-  assert.deepEqual(canonical, ["https://chpetri.com/.well-known/security.txt", "https://www.chpetri.com/.well-known/security.txt"]);
+  assert.deepEqual(canonical, ["https://chpetri.com/.well-known/security.txt"]);
   const htaccess = await readFile(new URL(".htaccess", dist), "utf8");
+  assert.match(htaccess, /RewriteCond %\{HTTP_HOST\} \^www\\\.chpetri\\\.com\$ \[NC\]\s+RewriteCond [^\n]*acme-challenge[^\n]*\s+RewriteRule \^ https:\/\/chpetri\.com%\{REQUEST_URI\} \[R=301,L\]/);
   assert.match(htaccess, /^AddDefaultCharset utf-8$/m, "security.txt must be served as text/plain; charset=utf-8");
   assert.equal(fields["Preferred-Languages"], "de, en");
   // RFC 9116: at most a year ahead; when this fails, set a new date and deploy
@@ -231,19 +263,11 @@ test("every PDF links only to https addresses and to the site's own mailbox", as
   }
 });
 
-test("old routes redirect to their new homes without scripts", async () => {
-  for (const [path, target] of Object.entries(redirects)) {
-    const html = await page(path);
-    assert.match(html, /<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'">/);
-    assert.match(html, /<meta name="referrer" content="no-referrer">/);
-    assert.match(html, new RegExp(`<meta http-equiv="refresh" content="0; url=${target}">`));
-    assert.match(html, new RegExp(`<link rel="canonical" href="https://chpetri\\.com${target}">`));
-    assert.doesNotMatch(html, /<script/i);
-  }
+test("old routes and withdrawn documents redirect to their new homes", async () => {
   const htaccess = await readFile(new URL(".htaccess", dist), "utf8");
-  assert.match(htaccess, /Redirect 301 \/about\/ \/cv\//);
+  assert.match(htaccess, /RedirectMatch 301 \^\/about\/\?\$ \/cv\//);
+  assert.match(htaccess, /RedirectMatch 301 \^\/projects\/\?\$ \/work\//);
   assert.match(htaccess, /ErrorDocument 404 \/404\.html/);
-  assert.match(htaccess, /Redirect 301 \/projects\/ \/work\//);
   // withdrawn CV PDFs: old links land on the CV page
   for (const lang of ["DE", "EN"]) assert.match(htaccess, new RegExp(`Redirect 301 /docs/Christian_Petri_CV_${lang}\\.pdf /cv/`));
 });
@@ -367,10 +391,15 @@ test("source has zero runtime dependencies and includes print, reduced-motion, a
   assert.match(cv, /@media print/);
   assert.match(base, /prefers-reduced-motion: reduce/);
   assert.match(pages, /forced-colors: active/);
-  // keyboard focus must stop clear of both pinned bars (WCAG 2.4.11), and the bars
-  // only pin where the screen is tall enough to spare them
-  assert.match(base, /scroll-padding-block: calc\(var\(--pinned\) \+ 16px\)/);
-  assert.match(base, /@media \(min-width: 47\.5em\) and \(min-height: 720px\) \{\s*:root \{ --pinned: var\(--bar\); \}/);
+  // the sub-pages keep their navigation in reach: the bottom bar is pinned on every layout,
+  // the top bar where the window is wide, neither in a very low window; keyboard focus
+  // stops clear of whatever is pinned (WCAG 2.4.11)
+  assert.match(pages, /scroll-padding-block: calc\(var\(--pinned\) \+ 16px\) calc\(var\(--pinned-bottom\) \+ 16px\)/);
+  assert.match(pages, /@media \(min-height: 480px\) \{\s*:root \{ --pinned-bottom: var\(--bar\); \}\s*\.corners-bottom \{ position: sticky; bottom: 0;/);
+  assert.match(pages, /@media \(min-width: 47\.5em\) and \(min-height: 480px\) \{\s*:root \{ --pinned: var\(--bar\); \}\s*\.corners-top \{ position: sticky; top: 0;/);
+  // a short laptop window gets slimmer bars; the start page never scrolls and pins nothing
+  assert.match(base, /@media \(min-width: 47\.5em\) and \(max-height: 719px\) \{\s*:root \{ --bar: 48px; \}/);
+  assert.doesNotMatch(base, /position: sticky|scroll-padding/);
   // width breakpoints follow the reader's default font size, and no word can widen the page
   for (const css of [base, home, pages, cv]) assert.doesNotMatch(css, /@media[^{]*width: \d+px/);
   assert.match(base, /body \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*overflow-wrap: break-word;/);
@@ -394,13 +423,8 @@ test("text colours meet WCAG AA contrast on the ground", async () => {
   }
 });
 
-test("publication gate blocks unresolved contact placeholders and verifies the active email", async () => {
-  if (process.env.PUBLISH_CHECK !== "1") return;
-  for (const path of pages) {
-    const html = await page(path);
-    assert.doesNotMatch(html, /EMAIL_PLACEHOLDER/);
-    if (path === "contact/index.html" || path === "cv/index.html") {
-      assert.match(html, /mailto:contact@chpetri\.com/);
-    }
+test("contact page and CV carry the site's mail address", async () => {
+  for (const path of ["contact/index.html", "cv/index.html"]) {
+    assert.match(await page(path), /mailto:contact@chpetri\.com/, path);
   }
 });

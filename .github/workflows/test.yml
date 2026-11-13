@@ -27,13 +27,12 @@ jobs:
           node-version: 24
           cache: npm
 
+      # --ignore-scripts: packages may not run their own code during the install
       - name: Install locked dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Audit build dependency
         run: npm audit --audit-level=high
 
       - name: Test and build static site
         run: npm test
-        env:
-          PUBLISH_CHECK: "1"
