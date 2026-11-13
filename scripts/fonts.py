@@ -40,7 +40,7 @@ FEATURES = ["kern", "liga", "ccmp", "locl", "mark", "mkmk", "case", "lnum", "tnu
 HOME_GREETING = "HI."
 HOME_TEXT = (
     "CHRISTIAN PETRI CV PROJEKTE KONTAKT"
-    "Ich bin Christian, Berater für IT-Sicherheit aus Darmstadt."
+    "Ich bin Christian, Cyber Security Advisor aus Darmstadt."
 )
 # The inline subsets keep only copyright and licence (name IDs 0, 13, 14, as the
 # OFL asks) and no outline for missing glyphs: every byte counts there.

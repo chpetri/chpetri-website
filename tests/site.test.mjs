@@ -86,7 +86,7 @@ test("start page is only the greeting inside the frame", async () => {
   assert.match(html, /<main id="main-content" class="hi">/);
   assert.match(html, /<h1>Hi\.<\/h1>/);
   const intro = html.match(/<p class="hi-line">([\s\S]*?)<\/p>/)[1].replace(/<[^>]+>/g, "");
-  assert.equal(intro, "Ich bin Christian, Berater für IT-Sicherheit aus Darmstadt.");
+  assert.equal(intro, "Ich bin Christian, Cyber Security Advisor aus Darmstadt.");
 });
 
 test("CV is factual, bilingual, German first, private-data-minimised, and script-free", async () => {
