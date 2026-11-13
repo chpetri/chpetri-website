@@ -130,7 +130,7 @@ time { font-variant-numeric: lining-nums tabular-nums; }
 .project-meta,
 .profiles dt {
   font-family: var(--display);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1.5;
   letter-spacing: 0.14em;
